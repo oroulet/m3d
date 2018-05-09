@@ -44,6 +44,8 @@ class Vector(object):
     def data(self):
         return self._data
 
+    def __eq__(self, other):
+        return (self.data - other.data).mean() < np.finfo(np.float32).eps
 
 class Orientation(object):
     def __init__(self, data=None):
@@ -73,16 +75,30 @@ class Orientation(object):
     @property
     def inverse(self):
         return Orientation(np.linalg.inv(self.data))
-    
+
     @property
     def data(self):
         return self._data
 
+    def __mul__(self, other):
+        if isinstance(other, Vector):
+            return Vector(self._data @ other.data)
+        elif isinstance(other, Orientation):
+            return Orientation(self._data @ other.data)
+        else:
+            raise ValueError()
+
+    def __eq__(self, other):
+        # might be iunterestingt to use quaternion here or multiply a vector and compare result
+        raise NotImplementedError()
 
 
 class Transform(object):
-    def __init__(self, orientation=None, vector=None):
-        self.data = np.identity(4)
+    def __init__(self, orientation=None, vector=None, matrix=None):
+        if matrix is not None:
+            self.data = matrix
+        else:
+            self.data = np.identity(4)
         if orientation is None:
             pass
         elif isinstance(orientation, np.ndarray):
@@ -129,7 +145,16 @@ class Transform(object):
     def inverse(self):
         return Transform(np.linalg.inv(self.orient.data), -self.pos.data)
 
-    def __eq__(self):
+    def __eq__(self, other):
         raise NotImplementedError
+
+    def __mul__(self, other):
+        if isinstance(other, Vector):
+            data = self.orient.data @ other.data + self.pos.data
+            return Vector(data)
+        elif isinstance(other, Transform):
+            return Transform(self.data @ other.data)
+        else:
+            raise ValueError()
 
 
