@@ -54,11 +54,20 @@ class Orientation(object):
         else:
             raise ValueError()
 
+    def rotate_xb(self, val):
+        t = np.array([[1, 0, 0], [0, np.cos(val), -np.sin(val)], [0, np.sin(val), np.cos(val)]])
+        self._data[:] = t @ self._data
+
+    def rotate_yb(self, val):
+        t = np.array([[np.cos(val), 0, np.sin(val)], [0, 1, 0], [-np.sin(val), 0, np.cos(val)]])
+        self._data[:] = t @ self._data
+
     def rotate_zb(self, val):
-        pass
+        t = np.array([[np.cos(val), -np.sin(val), 0], [np.sin(val), np.cos(val), 0], [0, 0, 1]])
+        self._data[:] = t @ self._data
 
     def __str__(self):
-        return "Orientation({})".format(self.data)
+        return "Orientation(\n{}\n)".format(self.data)
     __repr__ = __str__
 
     @property
