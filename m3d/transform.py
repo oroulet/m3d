@@ -149,6 +149,7 @@ class Transform(object):
         raise NotImplementedError
 
     def __mul__(self, other):
+        print("OTHER", other, type(other))
         if isinstance(other, Vector):
             data = self.orient.data @ other.data + self.pos.data
             return Vector(data)

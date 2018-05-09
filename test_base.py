@@ -27,17 +27,29 @@ def test_rotation():
     assert np.array_equal(m._data, t.data)
 
 
-def test_multiplication():
+def test_multiplication_orient():
     o = m3d.Orientation()
     o.rotate_zb(np.pi / 2)
     v = m3d.Vector((1, 0, 0))
     r = o * v
-    print(r)
     assert r == m3d.Vector((0, 1, 0))
+    o.rotate_zb(-np.pi)
+    v = m3d.Vector((2, 0, 0))
+    r = o * v
+    assert r == m3d.Vector((0, -2, 0))
 
+
+def test_transform():
+    t = m3d.Transform()
+    t.orient.rotate_zb(np.pi/2)
+    t.pos.y = 2
+    v = m3d.Vector((1, 0, 0))
+    r = t * v
+
+    assert r == m3d.Vector((0, 3, 0))
 
 
 if __name__ == "__main__":
-    test_multiplication()
+    test_transform()
 
 
