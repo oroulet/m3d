@@ -4,47 +4,53 @@ import numpy as np
 class Vector(object):
     def __init__(self, data=None):
         if isinstance(data, (list, tuple)):
-            self.data = np.array(data)
+            self._data = np.array(data)
         elif isinstance(data, np.ndarray):
-            self.data = data
+            self._data = data
         elif data is None:
-            self.data = np.array([0, 0, 0])
+            self._data = np.array([0, 0, 0])
         else:
             raise ValueError()
 
     @property
     def x(self):
-        return self.data[0]
+        return self._data[0]
 
     @x.setter
     def x(self, val):
-        self.data[0] = val
+        self._data[0] = val
 
     @property
     def y(self):
-        return self.data[1]
+        return self._data[1]
 
     @y.setter
     def y(self, val):
-        self.data[1] = val
+        self._data[1] = val
 
     @property
     def z(self):
-        return self.data[2]
+        return self._data[2]
 
     @z.setter
     def z(self, val):
-        self.data[2] = val
+        self._data[2] = val
 
     def __str__(self):
         return "Vector({}, {}, {})".format(self.x, self.y, self.z)
     __repr__ = __str__
 
+    @property
+    def data(self):
+        return self._data
+
 
 class Orientation(object):
-    def __init__(self, data):
+    def __init__(self, data=None):
         if isinstance(data, np.ndarray):
-            self.data = data
+            self._data = data
+        elif data is None:
+            self._data = np.identity(3)
         else:
             raise ValueError()
 
@@ -52,8 +58,17 @@ class Orientation(object):
         pass
 
     def __str__(self):
-        return "Orrientation({})".format(self.data)
+        return "Orientation({})".format(self.data)
     __repr__ = __str__
+
+    @property
+    def inverse(self):
+        return Orientation(np.linalg.inv(self.data))
+    
+    @property
+    def data(self):
+        return self._data
+
 
 
 class Transform(object):
@@ -72,12 +87,12 @@ class Transform(object):
         if vector is None:
             pass
         elif isinstance(vector, np.ndarray):
-            self.data[:, 3] = vector
+            self.data[:3, 3] = vector
         elif isinstance(vector, Vector):
-            self.data[:, 3] = vector.data
+            self.data[:3, 3] = vector.data
         else:
             raise ValueError("orientation argument should be a numpy array, Orientation or None")
-        self._pos = Vector(self.data[:, 3])
+        self._pos = Vector(self.data[:3, 3])
 
     def __str__(self):
         return "Transform(\n{},\n{}\n)".format(self.orient, self.pos)
@@ -89,8 +104,8 @@ class Transform(object):
 
     @pos.setter
     def pos(self, vector):
-        self.data[:, 3] = vector.data
-        self._pos = Vector(self.data[:, 3])
+        self.data[:3, 3] = vector.data
+        self._pos = Vector(self.data[:3, 3])
 
     @property
     def orient(self):
@@ -104,5 +119,8 @@ class Transform(object):
     @property
     def inverse(self):
         return Transform(np.linalg.inv(self.orient.data), -self.pos.data)
+
+    def __eq__(self):
+        raise NotImplementedError
 
 
