@@ -49,7 +49,23 @@ def test_transform():
     assert r == m3d.Vector((0, 3, 0))
 
 
+def test_pose_vector():
+    t = m3d.Transform()
+    t.pos.x = 1
+    t.orient.rotate_yb(1)
+    m = math3d.Transform()
+    m.orient.rotate_yb(1)
+    m.pos.x = 1
+    assert (t.pose_vector - m.pose_vector).mean() < m3d.float_eps
+    t.orient.rotate_zb(2)
+    m.orient.rotate_zb(2)
+    assert (t.pose_vector - m.pose_vector).mean() < m3d.float_eps
+    t.orient.rotate_xb(-2)
+    m.orient.rotate_xb(-2)
+    assert (t.pose_vector - m.pose_vector).mean() < m3d.float_eps
+ 
+
 if __name__ == "__main__":
-    test_transform()
+    test_pose_vector()
 
 

@@ -1,4 +1,7 @@
 import numpy as np
+import math
+
+float_eps = np.finfo(np.float).eps
 
 
 class Vector(object):
@@ -38,6 +41,7 @@ class Vector(object):
 
     def __str__(self):
         return "Vector({}, {}, {})".format(self.x, self.y, self.z)
+
     __repr__ = __str__
 
     @property
@@ -45,7 +49,14 @@ class Vector(object):
         return self._data
 
     def __eq__(self, other):
-        return (self.data - other.data).mean() < np.finfo(np.float32).eps
+        return (self.data - other.data).mean() < float_eps
+
+    def __mul__(self, other):
+        if isinstance(other, (float, int)):
+            return Vector(self._data * other)
+        else:
+            raise ValueError()
+
 
 class Orientation(object):
     def __init__(self, data=None):
@@ -70,6 +81,7 @@ class Orientation(object):
 
     def __str__(self):
         return "Orientation(\n{}\n)".format(self.data)
+
     __repr__ = __str__
 
     @property
@@ -91,6 +103,100 @@ class Orientation(object):
     def __eq__(self, other):
         # might be iunterestingt to use quaternion here or multiply a vector and compare result
         raise NotImplementedError()
+
+    def to_quaternion(self):
+        # adapted from
+        # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
+        Qxx, Qyx, Qzx, Qxy, Qyy, Qzy, Qxz, Qyz, Qzz = self._data.flat
+        # Fill only lower half of symmetric matrix
+        K = np.array([[Qxx - Qyy - Qzz, 0, 0, 0], [Qyx + Qxy, Qyy - Qxx - Qzz, 0, 0], [
+            Qzx + Qxz, Qzy + Qyz, Qzz - Qxx - Qyy, 0
+        ], [Qyz - Qzy, Qzx - Qxz, Qxy - Qyx, Qxx + Qyy + Qzz]]) / 3.0
+        # Use Hermitian eigenvectors, values for speed
+        vals, vecs = np.linalg.eigh(K)
+        # Select largest eigenvector, reorder to w,x,y,z quaternion
+        q = vecs[[3, 0, 1, 2], np.argmax(vals)]
+        # Prefer quaternion with positive w
+        # (q * -1 corresponds to same rotation as q)
+        if q[0] < 0:
+            q *= -1
+        return q
+
+    @staticmethod
+    def from_quaternion(self, q):
+        # adapted from
+        # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
+        w, x, y, z = q
+        Nq = w * w + x * x + y * y + z * z
+        if Nq < float_eps:
+            return np.eye(3)
+        s = 2.0 / Nq
+        X = x * s
+        Y = y * s
+        Z = z * s
+        wX = w * X
+        wY = w * Y
+        wZ = w * Z
+        xX = x * X
+        xY = x * Y
+        xZ = x * Z
+        yY = y * Y
+        yZ = y * Z
+        zZ = z * Z
+        return Orientation(
+            np.array([[1.0 - (yY + zZ), xY - wZ, xZ + wY], [xY + wZ, 1.0 - (xX + zZ), yZ - wX],
+                      [xZ - wY, yZ + wX, 1.0 - (xX + yY)]]))
+
+    @staticmethod
+    def from_axis_angle(self, axis, angle, is_normalized=False):
+        # adapted from
+        # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
+        x, y, z = axis
+        if not is_normalized:
+            n = math.sqrt(x * x + y * y + z * z)
+            x = x / n
+            y = y / n
+            z = z / n
+        c = math.cos(angle)
+        s = math.sin(angle)
+        C = 1 - c
+        xs = x * s
+        ys = y * s
+        zs = z * s
+        xC = x * C
+        yC = y * C
+        zC = z * C
+        xyC = x * yC
+        yzC = y * zC
+        zxC = z * xC
+        return Orientation(
+            np.array([[x * xC + c, xyC - zs, zxC + ys], [xyC + zs, y * yC + c, yzC - xs],
+                      [zxC - ys, yzC + xs, z * zC + c]]))
+
+    def to_axis_angle(self, unit_thresh=1e-5):
+        # adapted from
+        # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
+        M = np.asarray(self._data, dtype=np.float)
+        # direction: unit eigenvector of R33 corresponding to eigenvalue of 1
+        L, W = np.linalg.eig(M.T)
+        i = np.where(np.abs(L - 1.0) < unit_thresh)[0]
+        if not len(i):
+            raise ValueError("no unit eigenvector corresponding to eigenvalue 1")
+        direction = np.real(W[:, i[-1]]).squeeze()
+        # rotation angle depending on direction
+        cosa = (np.trace(M) - 1.0) / 2.0
+        if abs(direction[2]) > 1e-8:
+            sina = (M[1, 0] + (cosa - 1.0) * direction[0] * direction[1]) / direction[2]
+        elif abs(direction[1]) > 1e-8:
+            sina = (M[0, 2] + (cosa - 1.0) * direction[0] * direction[2]) / direction[1]
+        else:
+            sina = (M[2, 1] + (cosa - 1.0) * direction[1] * direction[2]) / direction[0]
+        angle = math.atan2(sina, cosa)
+        return Vector(direction), angle
+
+    def to_rotation_vector(self, unit_thresh=1e-5):
+        v, a = self.to_axis_angle()
+        return v * a
 
 
 class Transform(object):
@@ -121,6 +227,7 @@ class Transform(object):
 
     def __str__(self):
         return "Transform(\n{},\n{}\n)".format(self.orient, self.pos)
+
     __repr__ = __str__
 
     @property
@@ -149,7 +256,6 @@ class Transform(object):
         raise NotImplementedError
 
     def __mul__(self, other):
-        print("OTHER", other, type(other))
         if isinstance(other, Vector):
             data = self.orient.data @ other.data + self.pos.data
             return Vector(data)
@@ -158,4 +264,7 @@ class Transform(object):
         else:
             raise ValueError()
 
-
+    @property
+    def pose_vector(self):
+        v = self.orient.to_rotation_vector()
+        return np.array([self.pos.x, self.pos.y, self.pos.z, v.x, v.y, v.z])

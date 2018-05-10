@@ -1,1 +1,1 @@
-from m3d.transform import Transform, Vector, Orientation
+from m3d.transform import Transform, Vector, Orientation, float_eps
