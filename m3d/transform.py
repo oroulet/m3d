@@ -49,7 +49,7 @@ class Vector(object):
         return self._data
 
     def __eq__(self, other):
-        return (self.data - other.data).mean() < float_eps
+        return abs((self.data - other.data).mean()) < float_eps
 
     def __mul__(self, other):
         if isinstance(other, (float, int)):
@@ -103,8 +103,9 @@ class Orientation(object):
     __matmul__ = __mul__
 
     def __eq__(self, other):
-        # might be iunterestingt to use quaternion here or multiply a vector and compare result
-        raise NotImplementedError()
+        # FIXME; This is dead simple but can we make it more efficient?
+        v = Vector([1, 2, 3])
+        return self @ v == other @ v
 
     def to_quaternion(self):
         # adapted from
@@ -255,7 +256,9 @@ class Transform(object):
         return Transform(np.linalg.inv(self.orient.data), -self.pos.data)
 
     def __eq__(self, other):
-        raise NotImplementedError
+        # FIXME; This is dead simple but can we make it more efficient?
+        v = Vector([1, 2, 3])
+        return self @ v == other @ v
 
     def __mul__(self, other):
         if isinstance(other, Vector):
