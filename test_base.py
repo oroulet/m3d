@@ -65,9 +65,28 @@ def test_pose_vector():
     t.orient.rotate_xb(-2)
     m.orient.rotate_xb(-2)
     assert (t.pose_vector - m.pose_vector).mean() < m3d.float_eps
- 
+
+
+def test_mult_trans():
+    t1 = m3d.Transform()
+    t1.orient.rotate_xb(np.pi/2)
+    t1.pos.x = 1
+
+    t2 = m3d.Transform()
+    t2.orient.rotate_xb(np.pi/2)
+    t2.pos.x = 2
+
+    v = m3d.Vector([0, 0, 3])
+
+    tr = m3d.Transform()
+    tr.orient.rotate_xb(np.pi)
+    tr.pos.x = 3
+
+    assert t1 * t2 * v == tr * v
+    assert t1 @ t2 @ v == tr @ v
+
 
 if __name__ == "__main__":
-    test_pose_vector()
+    test_mult_trans()
 
 

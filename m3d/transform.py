@@ -100,6 +100,8 @@ class Orientation(object):
         else:
             raise ValueError()
 
+    __matmul__ = __mul__
+
     def __eq__(self, other):
         # might be iunterestingt to use quaternion here or multiply a vector and compare result
         raise NotImplementedError()
@@ -260,9 +262,11 @@ class Transform(object):
             data = self.orient.data @ other.data + self.pos.data
             return Vector(data)
         elif isinstance(other, Transform):
-            return Transform(self.data @ other.data)
+            return Transform(matrix=self.data @ other.data)
         else:
             raise ValueError()
+
+    __matmul__ = __mul__
 
     @property
     def pose_vector(self):
