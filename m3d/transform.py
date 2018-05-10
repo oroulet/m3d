@@ -1,17 +1,17 @@
 import numpy as np
 import math
 
-float_eps = np.finfo(np.float).eps
+float_eps = np.finfo(np.float32).eps
 
 
 class Vector(object):
-    def __init__(self, data=None):
+    def __init__(self, data=None, dtype=np.float32):
         if isinstance(data, (list, tuple)):
-            self._data = np.array(data)
+            self._data = np.array(data, dtype=dtype)
         elif isinstance(data, np.ndarray):
             self._data = data
         elif data is None:
-            self._data = np.array([0, 0, 0])
+            self._data = np.array([0, 0, 0], dtype=dtype)
         else:
             raise ValueError()
 
@@ -59,11 +59,11 @@ class Vector(object):
 
 
 class Orientation(object):
-    def __init__(self, data=None):
+    def __init__(self, data=None, dtype=np.float32):
         if isinstance(data, np.ndarray):
             self._data = data
         elif data is None:
-            self._data = np.identity(3)
+            self._data = np.identity(3, dtype=dtype)
         else:
             raise ValueError()
 
@@ -200,11 +200,11 @@ class Orientation(object):
 
 
 class Transform(object):
-    def __init__(self, orientation=None, vector=None, matrix=None):
+    def __init__(self, orientation=None, vector=None, matrix=None, dtype=np.float32):
         if matrix is not None:
             self.data = matrix
         else:
-            self.data = np.identity(4)
+            self.data = np.identity(4, dtype=dtype)
         if orientation is None:
             pass
         elif isinstance(orientation, np.ndarray):
@@ -213,7 +213,7 @@ class Transform(object):
             self.data[:3, :3] = orientation.data
         else:
             raise ValueError("orientation argument should be a numpy array, Orientation or None")
-        self._orient = Orientation(self.data[:3, :3])
+        self._orient = Orientation(self.data[:3, :3], dtype=dtype)
 
         if vector is None:
             pass
@@ -223,7 +223,7 @@ class Transform(object):
             self.data[:3, 3] = vector.data
         else:
             raise ValueError("orientation argument should be a numpy array, Orientation or None")
-        self._pos = Vector(self.data[:3, 3])
+        self._pos = Vector(self.data[:3, 3], dtype=dtype)
 
     def __str__(self):
         return "Transform(\n{},\n{}\n)".format(self.orient, self.pos)

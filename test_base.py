@@ -24,7 +24,9 @@ def test_rotation():
     m = math3d.Transform()
     m.orient.rotate_yb(1)
     m.pos.x = 1
-    assert np.array_equal(m._data, t.data)
+    print(t)
+    print(m)
+    assert (m._data - t.data).mean() < m3d.float_eps
 
 
 def test_multiplication_orient():
