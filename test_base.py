@@ -56,10 +56,12 @@ def test_transform():
 def test_pose_vector():
     t = m3d.Transform()
     t.pos.x = 1
+    t.pos.z = 2
     t.orient.rotate_yb(1)
     m = math3d.Transform()
     m.orient.rotate_yb(1)
     m.pos.x = 1
+    m.pos.z = 2
     assert (t.pose_vector - m.pose_vector).mean() < m3d.float_eps
     t.orient.rotate_zb(2)
     m.orient.rotate_zb(2)
@@ -129,10 +131,24 @@ def test_inverse():
 
 
 
+def test_construct():
+    o = m3d.Orientation()
+    o.rotate_zb(1)
+    v = m3d.Vector()
+    v[0] = 1
+    v[2] = 2
+    t = m3d.Transform(o, v)
+    assert t.pos.x == 1
+    assert t.pos.z == 2
+    t.pos = m3d.Vector()
+    t.orient.rotate_zb(-1)
+    assert t == m3d.Transform(matrix=np.identity(4))
+    t.orient = o
+    assert t != m3d.Transform(matrix=np.identity(4))
 
 
 
 if __name__ == "__main__":
-    test_pose_vector()
+    test_construct()
 
 

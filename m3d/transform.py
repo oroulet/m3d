@@ -17,6 +17,12 @@ class Vector(object):
         else:
             raise ValueError()
 
+    def __getitem__(self, idx):
+        return self._data[idx]
+
+    def __setitem__(self, idx, val):
+        self._data[idx] = val
+
     @property
     def x(self):
         return self._data[0]
@@ -240,8 +246,10 @@ class Transform(object):
 
     @pos.setter
     def pos(self, vector):
+        if not isinstance(vector, Vector):
+            raise ValueError()
         self.data[:3, 3] = vector.data
-        self._pos = Vector(self.data[:3, 3])
+        self._pos = Vector(self.data[:3, 3])  # make sure vector data is a view on our data
 
     @property
     def orient(self):
@@ -249,8 +257,10 @@ class Transform(object):
 
     @orient.setter
     def orient(self, orient):
-        self.data[:, 3] = orient.data
-        self._pos = Orientation(self.data[:, 3])
+        if not isinstance(orient, Orientation):
+            raise ValueError()
+        self.data[:3, :3] = orient.data
+        self._orient = Orientation(self.data[:3, :3])  # make sure orientation data is view on our data
 
     def inverse(self):
         return Transform(np.linalg.inv(self.orient.data), -self.pos.data)
@@ -262,6 +272,8 @@ class Transform(object):
 
     def __mul__(self, other):
         if isinstance(other, Vector):
+            print(self.orient.data @ other.data)
+            print(self.pos.data)
             data = self.orient.data @ other.data + self.pos.data
             return Vector(data)
         elif isinstance(other, Transform):
