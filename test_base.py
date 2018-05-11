@@ -107,6 +107,28 @@ def test_equal():
     assert t2 * t1 == tr
 
 
+def test_inverse():
+    t1 = m3d.Transform()
+    t1.orient.rotate_xb(np.pi / 3)
+    t1.pos.x = 1
+
+    t2 = m3d.Transform()
+    t2.orient.rotate_xb(-13 * np.pi / 6)
+    t2.pos.x = 2.3
+
+    v = m3d.Vector([0.1, -4.5, 3.0])
+
+    tr = m3d.Transform()
+    tr.orient.rotate_xb(np.pi)
+    tr.pos.x = 3
+
+    assert (t1 * t1.inverse) == m3d.Transform(matrix=np.identity(4))
+    assert (t2 * t2.inverse) == m3d.Transform(matrix=np.identity(4))
+    assert (t1 * t2 * t1.inverse * t2.inverse) == m3d.Transform(matrix=np.identity(4))
+    assert t1.inverse * (t1 * v) == v
+
+
+
 
 
 
