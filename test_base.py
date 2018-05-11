@@ -1,7 +1,9 @@
-import m3d
 import math3d  # as ref for testing
 import numpy as np
 from IPython import embed
+
+
+import m3d
 
 
 def test_init():
@@ -11,7 +13,7 @@ def test_init():
     t.pos.x = 2
     assert t.pos.x == 2
 
-    i = t.inverse
+    i = t.inverse()
     morten = math3d.Transform()
     morten.pos.x = 2
     assert np.array_equal(morten.inverse._data, i.data)
@@ -95,8 +97,6 @@ def test_equal():
     t2.orient.rotate_xb(np.pi/2)
     t2.pos.x = 2
 
-    v = m3d.Vector([0, 0, 3])
-
     tr = m3d.Transform()
     tr.orient.rotate_xb(np.pi)
     tr.pos.x = 3
@@ -122,10 +122,10 @@ def test_inverse():
     tr.orient.rotate_xb(np.pi)
     tr.pos.x = 3
 
-    assert (t1 * t1.inverse) == m3d.Transform(matrix=np.identity(4))
-    assert (t2 * t2.inverse) == m3d.Transform(matrix=np.identity(4))
-    assert (t1 * t2 * t1.inverse * t2.inverse) == m3d.Transform(matrix=np.identity(4))
-    assert t1.inverse * (t1 * v) == v
+    assert (t1 * t1.inverse()) == m3d.Transform(matrix=np.identity(4))
+    assert (t2 * t2.inverse()) == m3d.Transform(matrix=np.identity(4))
+    assert (t1 * t2 * t1.inverse() * t2.inverse()) == m3d.Transform(matrix=np.identity(4))
+    assert t1.inverse() * (t1 * v) == v
 
 
 
@@ -133,6 +133,6 @@ def test_inverse():
 
 
 if __name__ == "__main__":
-    test_equal()
+    test_pose_vector()
 
 

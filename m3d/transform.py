@@ -1,5 +1,7 @@
-import numpy as np
 import math
+
+import numpy as np
+
 
 float_eps = np.finfo(np.float32).eps
 
@@ -84,7 +86,6 @@ class Orientation(object):
 
     __repr__ = __str__
 
-    @property
     def inverse(self):
         return Orientation(np.linalg.inv(self.data))
 
@@ -126,7 +127,7 @@ class Orientation(object):
         return q
 
     @staticmethod
-    def from_quaternion(self, q):
+    def from_quaternion(q):
         # adapted from
         # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
         w, x, y, z = q
@@ -151,7 +152,7 @@ class Orientation(object):
                       [xZ - wY, yZ + wX, 1.0 - (xX + yY)]]))
 
     @staticmethod
-    def from_axis_angle(self, axis, angle, is_normalized=False):
+    def from_axis_angle(axis, angle, is_normalized=False):
         # adapted from
         # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
         x, y, z = axis
@@ -183,7 +184,7 @@ class Orientation(object):
         # direction: unit eigenvector of R33 corresponding to eigenvalue of 1
         L, W = np.linalg.eig(M.T)
         i = np.where(np.abs(L - 1.0) < unit_thresh)[0]
-        if not len(i):
+        if i.size == 0:
             raise ValueError("no unit eigenvector corresponding to eigenvalue 1")
         direction = np.real(W[:, i[-1]]).squeeze()
         # rotation angle depending on direction
@@ -198,7 +199,7 @@ class Orientation(object):
         return Vector(direction), angle
 
     def to_rotation_vector(self, unit_thresh=1e-5):
-        v, a = self.to_axis_angle()
+        v, a = self.to_axis_angle(unit_thresh)
         return v * a
 
 
@@ -251,7 +252,6 @@ class Transform(object):
         self.data[:, 3] = orient.data
         self._pos = Orientation(self.data[:, 3])
 
-    @property
     def inverse(self):
         return Transform(np.linalg.inv(self.orient.data), -self.pos.data)
 
