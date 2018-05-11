@@ -147,6 +147,34 @@ def test_construct():
     assert t != m3d.Transform(matrix=np.identity(4))
 
 
+def test_orient():
+    o = m3d.Orientation()
+    o.rotate_zb(2)
+    o2 = m3d.Orientation()
+    o2.rotate_zb(2 * np.pi)
+    assert o * o2 == o
+
+
+def test_quaternion():
+    o = m3d.Orientation()
+    o.rotate_xb(np.pi / 3)
+    o.rotate_zb(np.pi / 3)
+    q = o.to_quaternion()
+    o2 = m3d.Orientation.from_quaternion(q)
+    assert o == o2
+
+def test_axis_angle():
+    o = m3d.Orientation()
+    o.rotate_xb(np.pi / 3)
+    o.rotate_zb(np.pi / 3)
+    v, a = o.to_axis_angle()
+    o2 = m3d.Orientation.from_axis_angle(v, a)
+    assert o == o2
+
+
+
+
+
 
 if __name__ == "__main__":
     test_construct()
