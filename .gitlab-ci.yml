@@ -1,9 +1,9 @@
 image: ubuntu:rolling
 
 before_script:
-  - apt-get update -qq && apt-get install -y -qq python3 python3-numpy ipython3 python3-setuptools python3-pip python3-pytest
+  - apt-get update -qq && apt-get install -y -qq python3 python3-numpy ipython3 python3-setuptools python3-pip python3-pytest python3-pytest-cov
   - pip3 install math3d
 
 tests:
   script:
-    - python3 test_base.py
+    - py.test-3 --cov m3d --cov-report html --cov-report term --cov-report xml
