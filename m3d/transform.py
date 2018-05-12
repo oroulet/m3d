@@ -292,8 +292,7 @@ class Transform(object):
         elif isinstance(other, np.ndarray):
             # This make it easy to support several format of point clouds but might be mathematically wrong
             if other.shape[0] == 3:
-                #return self.orient.data @ other + self.pos.data.T
-                raise NotImplementedError()
+                return ((self.orient.data @ other).T + self.pos.data.T).T
             elif other.shape[1] == 3:
                 return (self.orient.data @ other.T).T + self.pos.data
             else:
