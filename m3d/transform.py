@@ -57,6 +57,8 @@ class Vector(object):
         return self._data
 
     def __eq__(self, other):
+        if not isinstance(other, Vector):
+            return False
         return abs((self.data - other.data).mean()) < float_eps
 
     def __mul__(self, other):
@@ -104,12 +106,21 @@ class Orientation(object):
             return Vector(self._data @ other.data)
         elif isinstance(other, Orientation):
             return Orientation(self._data @ other.data)
+        elif isinstance(other, np.ndarray):
+            if other.shape[0] == 3:
+                return self.data @ other
+            elif other.shape[1] == 3:
+                return (self.data @ other.T).T
+            else:
+                raise ValueError("Array shape must be 3,x or x,3")
         else:
             raise ValueError()
 
     __matmul__ = __mul__
 
     def __eq__(self, other):
+        if not isinstance(other, Orientation):
+            return False
         # FIXME; This is dead simple but can we make it more efficient?
         v = Vector([1, 2, 3])
         return self @ v == other @ v
@@ -266,18 +277,27 @@ class Transform(object):
         return Transform(np.linalg.inv(self.orient.data), -self.pos.data)
 
     def __eq__(self, other):
+        if not isinstance(other, Transform):
+            return False
         # FIXME; This is dead simple but can we make it more efficient?
         v = Vector([1, 2, 3])
         return self @ v == other @ v
 
     def __mul__(self, other):
         if isinstance(other, Vector):
-            print(self.orient.data @ other.data)
-            print(self.pos.data)
             data = self.orient.data @ other.data + self.pos.data
             return Vector(data)
         elif isinstance(other, Transform):
             return Transform(matrix=self.data @ other.data)
+        elif isinstance(other, np.ndarray):
+            # This make it easy to support several format of point clouds but might be mathematically wrong
+            if other.shape[0] == 3:
+                #return self.orient.data @ other + self.pos.data.T
+                raise NotImplementedError()
+            elif other.shape[1] == 3:
+                return (self.orient.data @ other.T).T + self.pos.data
+            else:
+                raise ValueError("Array shape must be 3, x or x, 3")
         else:
             raise ValueError()
 
@@ -287,3 +307,11 @@ class Transform(object):
     def pose_vector(self):
         v = self.orient.to_rotation_vector()
         return np.array([self.pos.x, self.pos.y, self.pos.z, v.x, v.y, v.z])
+
+    def to_ros(self):
+        return self.orient.to_quaternion(), self.pos.data
+    
+    @staticmethod
+    def from_ros(q, v):
+        orient = Orientation.from_quaternion(q)
+        return Transform(orient, Vector(v))

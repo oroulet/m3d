@@ -6,6 +6,14 @@ from IPython import embed
 import m3d
 
 
+def _are_equals(m1, m2):
+    """
+    to test equality of math3d and m3d vectors
+    """
+
+    return (m1 - m2).mean() < m3d.float_eps
+
+
 def test_init():
     t = m3d.Transform()
     assert t.pos.x == 0
@@ -28,7 +36,7 @@ def test_rotation():
     m.pos.x = 1
     print(t)
     print(m)
-    assert (m._data - t.data).mean() < m3d.float_eps
+    assert _are_equals(m._data, t.data)
 
 
 def test_multiplication_orient():
@@ -62,13 +70,13 @@ def test_pose_vector():
     m.orient.rotate_yb(1)
     m.pos.x = 1
     m.pos.z = 2
-    assert (t.pose_vector - m.pose_vector).mean() < m3d.float_eps
+    assert _are_equals(t.pose_vector, m.pose_vector)
     t.orient.rotate_zb(2)
     m.orient.rotate_zb(2)
-    assert (t.pose_vector - m.pose_vector).mean() < m3d.float_eps
+    assert _are_equals(t.pose_vector, m.pose_vector)
     t.orient.rotate_xb(-2)
     m.orient.rotate_xb(-2)
-    assert (t.pose_vector - m.pose_vector).mean() < m3d.float_eps
+    assert _are_equals(t.pose_vector, m.pose_vector)
 
 
 def test_mult_trans():
@@ -86,8 +94,14 @@ def test_mult_trans():
     tr.orient.rotate_xb(np.pi)
     tr.pos.x = 3
 
+    tm = math3d.Transform()
+    tm.orient.rotate_xb(np.pi/2)
+    tm.pos.x = 2
+    vm = math3d.Vector([0, 0, 3])
+
     assert t1 * t2 * v == tr * v
     assert t1 @ t2 @ v == tr @ v
+    assert _are_equals((t2 * v).data, (tm * vm)._data)
 
 
 def test_equal():
@@ -173,11 +187,30 @@ def test_axis_angle():
     assert o == o2
 
 
+def test_pc():
+    pc = np.array([[1, 2, 3], [1, 2, 3], [2, 3, 4], [3, 4, 5], [3, 4, 5]])
+    t = m3d.Transform()
+    t.pos.x = 1.2
+    t.pos.y = 1
+    t.orient.rotate_yb(1)
+    t.orient.rotate_zb(1)
+
+    tm = math3d.Transform()
+    tm.pos.x = 1.2
+    tm.pos.y = 1
+    tm.orient.rotate_yb(1)
+    tm.orient.rotate_zb(1)
+
+    assert _are_equals(t.data, tm._data)
+    a = t * pc
+    b = tm * pc
+    assert _are_equals(a, b)
+
 
 
 
 
 if __name__ == "__main__":
-    test_construct()
+    test_pc()
 
 
