@@ -16,10 +16,8 @@ class Vector(object):
             self._data = np.array(x, dtype=dtype)
         elif isinstance(x, np.ndarray):
             self._data = x
-        elif isinstance(x, (int, float)):
-            self._data = np.array([x, y, z], dtype=dtype)
         else:
-            raise ValueError()
+            self._data = np.array([float(x), float(y), float(z)], dtype=dtype)
 
     def __getitem__(self, idx):
         return self._data[idx]
@@ -29,7 +27,7 @@ class Vector(object):
 
     @property
     def x(self):
-        return self._data[0]
+        return float(self._data[0])
 
     @x.setter
     def x(self, val):
@@ -37,7 +35,7 @@ class Vector(object):
 
     @property
     def y(self):
-        return self._data[1]
+        return float(self._data[1])
 
     @y.setter
     def y(self, val):
@@ -45,7 +43,7 @@ class Vector(object):
 
     @property
     def z(self):
-        return self._data[2]
+        return float(self._data[2])
 
     @z.setter
     def z(self, val):
@@ -235,7 +233,7 @@ class Orientation(object):
         angle = math.atan2(sina, cosa)
         return Vector(direction), angle
 
-    def to_rotation_vector(self, unit_thresh=1e-5):
+    def rotation_vector(self, unit_thresh=1e-5):
         v, a = self.to_axis_angle(unit_thresh)
         return v * a
 
@@ -345,7 +343,7 @@ class Transform(object):
 
     @property
     def pose_vector(self):
-        v = self.orient.to_rotation_vector()
+        v = self.orient.rotation_vector()
         return np.array([self.pos.x, self.pos.y, self.pos.z, v.x, v.y, v.z])
 
     def to_ros(self):
