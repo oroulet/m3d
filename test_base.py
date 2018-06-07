@@ -206,7 +206,7 @@ def test_pc():
     b = tm * pc
     assert _are_equals(a, b)
     assert a.shape == pc.shape
-
+    
     c = t * pc.T
     assert c.shape == pc.T.shape
 

@@ -53,7 +53,7 @@ class Vector(object):
     __repr__ = __str__
 
     @property
-    def data(self):
+    def data(self) -> np.ndarray:
         return self._data
 
     def __eq__(self, other):
@@ -69,7 +69,7 @@ class Vector(object):
 
 
 class Orientation(object):
-    def __init__(self, data=None, dtype=np.float32):
+    def __init__(self, data: np.ndarray=None, dtype=np.float32):
         if isinstance(data, np.ndarray):
             self._data = data
         elif data is None:
@@ -77,15 +77,15 @@ class Orientation(object):
         else:
             raise ValueError()
 
-    def rotate_xb(self, val):
+    def rotate_xb(self, val: float):
         t = np.array([[1, 0, 0], [0, np.cos(val), -np.sin(val)], [0, np.sin(val), np.cos(val)]])
         self._data[:] = t @ self._data
 
-    def rotate_yb(self, val):
+    def rotate_yb(self, val: float):
         t = np.array([[np.cos(val), 0, np.sin(val)], [0, 1, 0], [-np.sin(val), 0, np.cos(val)]])
         self._data[:] = t @ self._data
 
-    def rotate_zb(self, val):
+    def rotate_zb(self, val: float):
         t = np.array([[np.cos(val), -np.sin(val), 0], [np.sin(val), np.cos(val), 0], [0, 0, 1]])
         self._data[:] = t @ self._data
 
