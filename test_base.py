@@ -42,23 +42,23 @@ def test_rotation():
 def test_multiplication_orient():
     o = m3d.Orientation()
     o.rotate_zb(np.pi / 2)
-    v = m3d.Vector((1, 0, 0))
+    v = m3d.Vector(1, 0, 0)
     r = o * v
-    assert r == m3d.Vector((0, 1, 0))
+    assert r == m3d.Vector(0, 1, 0)
     o.rotate_zb(-np.pi)
-    v = m3d.Vector((2, 0, 0))
+    v = m3d.Vector(2, 0, 0)
     r = o * v
-    assert r == m3d.Vector((0, -2, 0))
+    assert r == m3d.Vector(0, -2, 0)
 
 
 def test_transform():
     t = m3d.Transform()
     t.orient.rotate_zb(np.pi/2)
     t.pos.y = 2
-    v = m3d.Vector((1, 0, 0))
+    v = m3d.Vector(1, 0, 0)
     r = t * v
 
-    assert r == m3d.Vector((0, 3, 0))
+    assert r == m3d.Vector(0, 3, 0)
 
 
 def test_pose_vector():
@@ -88,7 +88,7 @@ def test_mult_trans():
     t2.orient.rotate_xb(np.pi/2)
     t2.pos.x = 2
 
-    v = m3d.Vector([0, 0, 3])
+    v = m3d.Vector(0, 0, 3)
 
     tr = m3d.Transform()
     tr.orient.rotate_xb(np.pi)
@@ -97,7 +97,7 @@ def test_mult_trans():
     tm = math3d.Transform()
     tm.orient.rotate_xb(np.pi/2)
     tm.pos.x = 2
-    vm = math3d.Vector([0, 0, 3])
+    vm = math3d.Vector(0, 0, 3)
 
     assert t1 * t2 * v == tr * v
     assert t1 @ t2 @ v == tr @ v
@@ -132,7 +132,7 @@ def test_inverse():
     t2.orient.rotate_xb(-13 * np.pi / 6)
     t2.pos.x = 2.3
 
-    v = m3d.Vector([0.1, -4.5, 3.0])
+    v = m3d.Vector(0.1, -4.5, 3.0)
 
     tr = m3d.Transform()
     tr.orient.rotate_xb(np.pi)

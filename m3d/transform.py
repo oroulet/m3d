@@ -7,13 +7,17 @@ float_eps = np.finfo(np.float32).eps
 
 
 class Vector(object):
-    def __init__(self, data=None, dtype=np.float32):
-        if isinstance(data, (list, tuple)):
-            self._data = np.array(data, dtype=dtype)
-        elif isinstance(data, np.ndarray):
-            self._data = data
-        elif data is None:
-            self._data = np.array([0, 0, 0], dtype=dtype)
+    """
+    Represent a vector. 
+    Takes either x, y, z as argument or an array
+    """
+    def __init__(self, x=0.0, y=0.0, z=0.0, dtype=np.float32):
+        if isinstance(x, (list, tuple)):
+            self._data = np.array(x, dtype=dtype)
+        elif isinstance(x, np.ndarray):
+            self._data = x
+        elif isinstance(x, (int, float)):
+            self._data = np.array([x, y, z], dtype=dtype)
         else:
             raise ValueError()
 
@@ -66,6 +70,14 @@ class Vector(object):
             return Vector(self._data * other)
         else:
             raise ValueError()
+
+    property
+    def length(self):
+        return (self.x**2 + self.y**2 + self.z**2)**0.5
+
+    def dist(self, other):
+        data = self.other.data - self.data
+        return data.length
 
 
 class Orientation(object):
@@ -122,7 +134,7 @@ class Orientation(object):
         if not isinstance(other, Orientation):
             return False
         # FIXME; This is dead simple but can we make it more efficient?
-        v = Vector([1, 2, 3])
+        v = Vector(1, 2, 3)
         return self @ v == other @ v
 
     def to_quaternion(self):
