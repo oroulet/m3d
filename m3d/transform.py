@@ -239,8 +239,15 @@ class Orientation(object):
         v, a = self.to_axis_angle(unit_thresh)
         return v * a
 
+    def copy(self):
+        return Orientation(self.data.copy())
+
 
 class Transform(object):
+    """
+    Create a Transform
+    Accepts an orientation and a vector or a matrci 4*4 as argument
+    """
     def __init__(self, orientation=None, vector=None, matrix=None, dtype=np.float32):
         if matrix is not None:
             self.data = matrix
@@ -249,7 +256,13 @@ class Transform(object):
         if orientation is None:
             pass
         elif isinstance(orientation, np.ndarray):
-            self.data[:3, :3] = orientation
+            if orientation.shape == (3, 3):
+                self.data[:3, :3] = orientation
+            elif orientation.shape == (4, 4):
+                #FIXME: This crappy to take the orientation argument as a Transform...
+                self.data = orientation
+            else:
+                raise ValueError()
         elif isinstance(orientation, Orientation):
             self.data[:3, :3] = orientation.data
         else:
@@ -342,3 +355,7 @@ class Transform(object):
     def from_ros(q, v):
         orient = Orientation.from_quaternion(q)
         return Transform(orient, Vector(v))
+
+    def copy(self):
+        return Transform(self.data.copy())
+

@@ -211,8 +211,14 @@ def test_pc():
     assert c.shape == pc.T.shape
 
 
-
-
+def test_copy():
+    t = m3d.Transform()
+    t.pos.x = 1
+    new = t.copy()
+    t.orient.rotate_zb(1)
+    new.pos.x = 5
+    assert t.pos.x != new.pos.x
+    assert t.orient.data[0, 0] != new.orient.data[0, 0]
 
 if __name__ == "__main__":
     test_pc()
