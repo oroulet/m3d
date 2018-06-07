@@ -113,6 +113,14 @@ class Orientation(object):
     def data(self):
         return self._data
 
+    @property
+    def array(self):
+        return self._data
+
+    @property
+    def matrix(self):
+        return np.matrix(self._data)
+
     def __mul__(self, other):
         if isinstance(other, Vector):
             return Vector(self._data @ other.data)
@@ -284,6 +292,14 @@ class Transform(object):
             raise ValueError()
         self.data[:3, :3] = orient.data
         self._orient = Orientation(self.data[:3, :3])  # make sure orientation data is view on our data
+
+    @property
+    def array(self):
+        return self.data
+
+    @property
+    def matrix(self):
+        return np.matrix(self.data)
 
     def inverse(self):
         return Transform(np.linalg.inv(self.orient.data), -self.pos.data)
