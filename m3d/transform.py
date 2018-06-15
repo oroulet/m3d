@@ -75,7 +75,7 @@ class Vector(object):
         else:
             raise ValueError()
 
-    property
+    @property
     def length(self):
         return (self.x**2 + self.y**2 + self.z**2)**0.5
 
@@ -112,6 +112,11 @@ class Orientation(object):
 
     def inverse(self):
         return Orientation(np.linalg.inv(self.data))
+
+    def ang_dist(self, other):
+        r = self * other.inverse()
+        trace_r = r.data[0, 0] + r.data[1, 1] + r.data[2, 2]
+        return np.arccos((trace_r - 1) / 2)
 
     @property
     def data(self):

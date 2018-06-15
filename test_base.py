@@ -234,6 +234,43 @@ def test_addition():
     v_res = v3 + v1
     assert v_res == m3d.Vector(3, -1, 7)
 
+def test_ang_dist():
+    o1 = m3d.Orientation()
+    o1.rotate_yb(1)
+    o1.rotate_xb(1)
+    o1.rotate_zb(1)
+
+    o2 = m3d.Orientation()
+    o2.rotate_yb(2)
+    o2.rotate_xb(2)
+    o2.rotate_zb(2)
+
+    o_dist_m3d = o1.ang_dist(o2)
+    o_inv_dist_m3d = o2.ang_dist(o1)
+
+    o1_m = math3d.Orientation()
+    o1_m.rotate_yb(1)
+    o1_m.rotate_xb(1)
+    o1_m.rotate_zb(1)
+
+    o2_m = math3d.Orientation()
+    o2_m.rotate_yb(2)
+    o2_m.rotate_xb(2)
+    o2_m.rotate_zb(2)
+
+    o_dist_math3d = o1_m.ang_dist(o2_m)
+    o_inv_dist_math3d = o2_m.ang_dist(o1_m)
+
+    print('o_inv_dist_m3d', o_inv_dist_m3d)
+    print('o_inv_dist_math3d', o_inv_dist_math3d)
+
+    print('o_dist_m3d', o_dist_m3d)
+    print('o_dist_math3d', o_dist_math3d)
+
+    assert abs(o_dist_m3d - o_dist_math3d) <= m3d.float_eps
+    assert abs(o_inv_dist_m3d - o_inv_dist_math3d) <= m3d.float_eps
+    
+
 
 if __name__ == "__main__":
     test_pc()
