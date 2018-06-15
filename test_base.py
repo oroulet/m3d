@@ -144,7 +144,6 @@ def test_inverse():
     assert t1.inverse() * (t1 * v) == v
 
 
-
 def test_construct():
     o = m3d.Orientation()
     o.rotate_zb(1)
@@ -206,7 +205,7 @@ def test_pc():
     b = tm * pc
     assert _are_equals(a, b)
     assert a.shape == pc.shape
-    
+
     c = t * pc.T
     assert c.shape == pc.T.shape
 
@@ -223,16 +222,24 @@ def test_copy():
 
 def test_substraction():
     v1 = m3d.Vector(1, 2, 3)
-    v3 = m3d.Vector(2, -3, 4)
-    v_res = v3 - v1
+    v2 = m3d.Vector(2, -3, 4)
+    v_res = v2 - v1
     assert v_res == m3d.Vector(1, -5, 1)
 
 
 def test_addition():
     v1 = m3d.Vector(1, 2, 3)    
-    v3 = m3d.Vector(2, -3, 4)
-    v_res = v3 + v1
+    v2 = m3d.Vector(2, -3, 4)
+    v_res = v2 + v1
     assert v_res == m3d.Vector(3, -1, 7)
+
+
+def dist():
+    v1 = m3d.Vector(1, 1, 1)    
+    v2 = m3d.Vector(2, 2, 2)
+    v_res = v2.dist(v1)
+    assert v_res == m3d.Vector(1, 1, 1).length
+
 
 def test_ang_dist():
     o1 = m3d.Orientation()
@@ -269,10 +276,7 @@ def test_ang_dist():
 
     assert abs(o_dist_m3d - o_dist_math3d) <= m3d.float_eps
     assert abs(o_inv_dist_m3d - o_inv_dist_math3d) <= m3d.float_eps
-    
 
 
 if __name__ == "__main__":
     test_pc()
-
-
