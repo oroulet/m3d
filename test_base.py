@@ -174,7 +174,7 @@ def test_quaternion():
     o.rotate_xb(np.pi / 3)
     o.rotate_zb(np.pi / 3)
     q = o.to_quaternion()
-    o2 = m3d.Orientation.from_quaternion(q)
+    o2 = m3d.Orientation.from_quaternion(*q)
     assert o == o2
 
 
@@ -219,6 +219,21 @@ def test_copy():
     new.pos.x = 5
     assert t.pos.x != new.pos.x
     assert t.orient.data[0, 0] != new.orient.data[0, 0]
+
+
+def test_substraction():
+    v1 = m3d.Vector(1, 2, 3)
+    v3 = m3d.Vector(2, -3, 4)
+    v_res = v3 - v1
+    assert v_res == m3d.Vector(1, -5, 1)
+
+
+def test_addition():
+    v1 = m3d.Vector(1, 2, 3)    
+    v3 = m3d.Vector(2, -3, 4)
+    v_res = v3 + v1
+    assert v_res == m3d.Vector(3, -1, 7)
+
 
 if __name__ == "__main__":
     test_pc()

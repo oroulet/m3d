@@ -52,6 +52,12 @@ class Vector(object):
     def __str__(self):
         return "Vector({}, {}, {})".format(self.x, self.y, self.z)
 
+    def __sub__(self, other):
+        return Vector(self.data - other.data)
+
+    def __add__(self, other):
+        return Vector(self.data + other.data)
+
     __repr__ = __str__
 
     @property
@@ -162,10 +168,9 @@ class Orientation(object):
         return q
 
     @staticmethod
-    def from_quaternion(q):
+    def from_quaternion(w, x, y, z):
         # adapted from
         # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
-        w, x, y, z = q
         Nq = w * w + x * x + y * y + z * z
         if Nq < float_eps:
             return np.eye(3)
