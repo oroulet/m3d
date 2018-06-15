@@ -241,7 +241,7 @@ def test_addition():
     assert v_res == m3d.Vector(3, -1, 7)
 
 
-def dist():
+def test_dist():
     v1 = m3d.Vector(1, 1, 1)    
     v2 = m3d.Vector(2, 2, 2)
     v_res = v2.dist(v1)

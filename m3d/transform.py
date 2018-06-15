@@ -80,8 +80,8 @@ class Vector(object):
         return (self.x**2 + self.y**2 + self.z**2)**0.5
 
     def dist(self, other):
-        data = self.other.data - self.data
-        return data.length
+        v = Vector(other.data - self.data)
+        return v.length
 
 
 class Orientation(object):
