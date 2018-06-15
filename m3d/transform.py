@@ -155,8 +155,12 @@ class Orientation(object):
         return self @ v == other @ v
 
     def to_quaternion(self):
-        # adapted from
-        # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
+        '''
+        Returns w, x, y, z
+        adapted from
+        https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
+        '''
+
         Qxx, Qyx, Qzx, Qxy, Qyy, Qzy, Qxz, Qyz, Qzz = self._data.flat
         # Fill only lower half of symmetric matrix
         K = np.array([[Qxx - Qyy - Qzz, 0, 0, 0], [Qyx + Qxy, Qyy - Qxx - Qzz, 0, 0], [
@@ -170,7 +174,7 @@ class Orientation(object):
         # (q * -1 corresponds to same rotation as q)
         if q[0] < 0:
             q *= -1
-        return q
+        return q[0], q[1], q[2], q[3]
 
     @staticmethod
     def from_quaternion(w, x, y, z):

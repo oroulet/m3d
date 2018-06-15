@@ -176,6 +176,13 @@ def test_quaternion():
     o2 = m3d.Orientation.from_quaternion(*q)
     assert o == o2
 
+    o_math = math3d.Orientation()
+    o_math.rotate_xb(np.pi / 3)
+    o_math.rotate_zb(np.pi / 3)
+    q_math = o_math.get_unit_quaternion()
+    o2_math = math3d.Orientation(q_math)
+    assert _are_equals(np.array(q), np.array((q_math.s, q_math.x, q_math.y, q_math.z)))
+
 
 def test_axis_angle():
     o = m3d.Orientation()
