@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="m3d",
-    version="0.1.1",
+    version="0.2.0",
     description="Non GPL math3d alternative",
     author="Olivier Roulet-Dubonnet",
     author_email="olivier.roulet@gmail.com",
