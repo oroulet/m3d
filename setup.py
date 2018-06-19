@@ -2,11 +2,11 @@ from setuptools import setup, find_packages
 
 setup(
     name="m3d",
-    version="0.2.0",
-    description="Non GPL math3d alternative",
+    version="0.2.1",
+    description="Python3 3D transformation library with object oriented API and MIT licensed",
     author="Olivier Roulet-Dubonnet",
     author_email="olivier.roulet@gmail.com",
-    url='https://gitlab.com/kurant/m3d',
+    url='https://gitlab.com/kurant-open/m3d',
     packages=find_packages(),
     provides=["m3d"],
     license="MIT",
