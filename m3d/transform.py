@@ -88,6 +88,8 @@ class Orientation(object):
     def __init__(self, data: np.ndarray=None, dtype=np.float32):
         if isinstance(data, np.ndarray):
             self._data = data
+        elif isinstance(data, list):
+            self._data = np.array(data)
         elif data is None:
             self._data = np.identity(3, dtype=dtype)
         else:
@@ -327,7 +329,16 @@ class Transform(object):
         return np.matrix(self.data)
 
     def inverse(self):
-        return Transform(np.linalg.inv(self.orient.data), -self.pos.data)
+        """
+        Return inverse of Transform
+        """
+        return Transform(np.linalg.inv(self.data))
+
+    def invert(self):
+        """
+        In-place inverse
+        """
+        self.data = np.linalg.inv(self.data)
 
     def __eq__(self, other):
         if not isinstance(other, Transform):

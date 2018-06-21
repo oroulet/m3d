@@ -2,7 +2,6 @@ import math3d  # as ref for testing
 import numpy as np
 from IPython import embed
 
-
 import m3d
 
 
@@ -22,21 +21,18 @@ def test_init():
     assert t.pos.x == 2
 
     i = t.inverse()
-    morten = math3d.Transform()
-    morten.pos.x = 2
-    assert np.array_equal(morten.inverse._data, i.data)
+    assert m3d.Vector(-2, 0, 0) == i.pos
+    assert m3d.Orientation() == i.orient
 
 
 def test_rotation():
     t = m3d.Transform()
     t.pos.x = 1
     t.orient.rotate_yb(1)
-    m = math3d.Transform()
-    m.orient.rotate_yb(1)
-    m.pos.x = 1
-    print(t)
-    print(m)
-    assert _are_equals(m._data, t.data)
+    res = m3d.Transform(
+        m3d.Orientation([[0.54030228, 0, 0.84147096], [0., 1, 0.], [-0.84147096, 0., 0.54030228]]),
+        m3d.Vector(1, 0, 0))
+    assert _are_equals(res.data, t.data)
 
 
 def test_multiplication_orient():
@@ -53,7 +49,7 @@ def test_multiplication_orient():
 
 def test_transform():
     t = m3d.Transform()
-    t.orient.rotate_zb(np.pi/2)
+    t.orient.rotate_zb(np.pi / 2)
     t.pos.y = 2
     v = m3d.Vector(1, 0, 0)
     r = t * v
@@ -81,11 +77,11 @@ def test_pose_vector():
 
 def test_mult_trans():
     t1 = m3d.Transform()
-    t1.orient.rotate_xb(np.pi/2)
+    t1.orient.rotate_xb(np.pi / 2)
     t1.pos.x = 1
 
     t2 = m3d.Transform()
-    t2.orient.rotate_xb(np.pi/2)
+    t2.orient.rotate_xb(np.pi / 2)
     t2.pos.x = 2
 
     v = m3d.Vector(0, 0, 3)
@@ -95,7 +91,7 @@ def test_mult_trans():
     tr.pos.x = 3
 
     tm = math3d.Transform()
-    tm.orient.rotate_xb(np.pi/2)
+    tm.orient.rotate_xb(np.pi / 2)
     tm.pos.x = 2
     vm = math3d.Vector(0, 0, 3)
 
@@ -106,11 +102,11 @@ def test_mult_trans():
 
 def test_equal():
     t1 = m3d.Transform()
-    t1.orient.rotate_xb(np.pi/2)
+    t1.orient.rotate_xb(np.pi / 2)
     t1.pos.x = 1
 
     t2 = m3d.Transform()
-    t2.orient.rotate_xb(np.pi/2)
+    t2.orient.rotate_xb(np.pi / 2)
     t2.pos.x = 2
 
     tr = m3d.Transform()
@@ -142,6 +138,18 @@ def test_inverse():
     assert (t2 * t2.inverse()) == m3d.Transform(matrix=np.identity(4))
     assert (t1 * t2 * t1.inverse() * t2.inverse()) == m3d.Transform(matrix=np.identity(4))
     assert t1.inverse() * (t1 * v) == v
+
+
+def test_inverse_2():
+    t = m3d.Transform()
+    t.pos.x = 1
+    t.pos.z = 3
+    t.orient.rotate_yb(1)
+    t.orient.rotate_zb(1)
+    v = m3d.Vector(2, 3, 4)
+    assert v != t * v
+    assert v == t.inverse() * t * v
+    assert v == t * t.inverse() * v
 
 
 def test_construct():
@@ -235,14 +243,14 @@ def test_substraction():
 
 
 def test_addition():
-    v1 = m3d.Vector(1, 2, 3)    
+    v1 = m3d.Vector(1, 2, 3)
     v2 = m3d.Vector(2, -3, 4)
     v_res = v2 + v1
     assert v_res == m3d.Vector(3, -1, 7)
 
 
 def test_dist():
-    v1 = m3d.Vector(1, 1, 1)    
+    v1 = m3d.Vector(1, 1, 1)
     v2 = m3d.Vector(2, 2, 2)
     v_res = v2.dist(v1)
     assert v_res == m3d.Vector(1, 1, 1).length
