@@ -367,5 +367,32 @@ def test_ang_dist():
     assert abs(o_inv_dist_m3d - o_inv_dist_math3d) <= m3d.float_eps
 
 
+def test_eq():
+    t = m3d.Transform()
+    t.orient.rotate_yb(1)
+    t.orient.rotate_zb(1)
+    t.pos.x = 1
+    v = m3d.Vector()
+    o = m3d.Orientation()
+    assert t != v
+    assert v != t
+    assert o != v
+    assert v != o
+    assert o != t
+    assert t != o
+    t2 = t.copy()
+    assert t == t2
+    assert t.pos == t2.pos
+    assert t.orient == t2.orient
+    t2.pos.y = 2
+    assert t != t2
+    assert t.pos != t2.pos
+    assert t.orient == t2.orient
+    t3 = t.copy()
+    t3.orient.rotate_xb(1)
+    assert t2.pos != t3.pos
+    assert t2.orient != t3.orient
+    assert t != t3
+
 if __name__ == "__main__":
     test_pc()
