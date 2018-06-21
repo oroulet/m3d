@@ -135,7 +135,9 @@ def test_inverse():
     tr.pos.x = 3
 
     assert (t1 * t1.inverse()) == m3d.Transform(matrix=np.identity(4))
+    assert (t1 * t1.inverse()) == m3d.Transform()
     assert (t2 * t2.inverse()) == m3d.Transform(matrix=np.identity(4))
+    assert (t2 * t2.inverse()) == m3d.Transform()
     assert (t1 * t2 * t1.inverse() * t2.inverse()) == m3d.Transform(matrix=np.identity(4))
     assert t1.inverse() * (t1 * v) == v
 
@@ -150,6 +152,39 @@ def test_inverse_2():
     assert v != t * v
     assert v == t.inverse() * t * v
     assert v == t * t.inverse() * v
+    assert v != t @ v
+    assert v == t.inverse() @ t @ v
+    assert v == t @ t.inverse() @ v
+
+
+def test_rotation_seq():
+    t = m3d.Transform()
+    t.pos.x = 1
+    t.pos.z = 3
+    t.orient.rotate_xb(1)
+    res = t.copy()
+    t.orient.rotate_yb(2)
+    t.orient.rotate_zb(3)
+    t.orient.rotate_zb(-3)
+    t.orient.rotate_yb(-2)
+    assert t == res
+
+
+def test_rotation_seq_2():
+    t = m3d.Transform()
+    t.pos.x = 1
+    t.pos.z = 3
+    t.orient.rotate_xb(1)
+    t.orient.rotate_yb(2)
+    t.orient.rotate_zb(3)
+
+    b = m3d.Transform()
+    b.orient.rotate_zb(-3)
+    b.orient.rotate_yb(-2)
+    b.orient.rotate_xb(-1)
+    b.pos = b.orient * m3d.Vector(1, 0, 3) * -1
+
+    assert _are_equals(t.inverse().data,  b.data)
 
 
 def test_construct():
