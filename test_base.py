@@ -146,6 +146,17 @@ def test_inverse_orient():
     assert o.inverse() * o * v == v
     assert o * o.inverse() * v == v
     assert o * o.inverse() * o == o
+
+
+def test_inverse_trans():
+    t = m3d.Transform()
+    t.pos.x = 1
+    t.orient.rotate_zb(np.pi / 2)
+    t.orient.rotate_yb(np.pi / 2)
+    v = m3d.Vector(2, 0, 0)
+    assert t * v == m3d.Vector(1, 2, 0)
+
+
 def test_inverse():
     t1 = m3d.Transform()
     t1.orient.rotate_xb(np.pi / 3)
