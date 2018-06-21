@@ -9,8 +9,19 @@ def _are_equals(m1, m2):
     """
     to test equality of math3d and m3d vectors
     """
+    m1 = _to_np(m1)
+    m2 = _to_np(m2)
 
-    return (m1 - m2).mean() < m3d.float_eps
+    return (abs(m1 - m2) <= m3d.float_eps).all()
+
+
+def _to_np(obj):
+    if isinstance(obj, np.ndarray):
+        return obj
+    elif isinstance(obj, (m3d.Vector, m3d.Orientation, m3d.Transform)):
+        return obj.data
+    else:
+        raise ValueError("Could not convert ob to nupy array", obj, type(obj))
 
 
 def test_init():
@@ -75,6 +86,12 @@ def test_pose_vector():
     assert _are_equals(t.pose_vector, m.pose_vector)
 
 
+def test_vec_eq():
+    a = m3d.Vector(-1.0000001192092896, -1.9999998807907104, -3.0)
+    b = m3d.Vector(-1.0, -2.0, -3.0)
+    assert a == b
+
+
 def test_mult_trans():
     t1 = m3d.Transform()
     t1.orient.rotate_xb(np.pi / 2)
@@ -119,6 +136,16 @@ def test_equal():
     assert t2 * t1 == tr
 
 
+def test_inverse_orient():
+    o = m3d.Orientation()
+    o.rotate_xb(3)
+    o.rotate_yb(1)
+    o.rotate_xb(1)
+    v = m3d.Vector(-1, -2, -3)
+    assert o * v != v
+    assert o.inverse() * o * v == v
+    assert o * o.inverse() * v == v
+    assert o * o.inverse() * o == o
 def test_inverse():
     t1 = m3d.Transform()
     t1.orient.rotate_xb(np.pi / 3)
@@ -253,7 +280,8 @@ def test_pc():
     assert _are_equals(t.data, tm._data)
     a = t * pc
     b = tm * pc
-    assert _are_equals(a, b)
+    assert _are_equals(a[0], b[0])
+    assert _are_equals(a[-1], b[-1])
     assert a.shape == pc.shape
 
     c = t * pc.T

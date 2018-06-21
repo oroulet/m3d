@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 
-float_eps = np.finfo(np.float32).eps
+float_eps = 10 * np.finfo(np.float32).eps
 
 
 class Vector(object):
@@ -67,7 +67,7 @@ class Vector(object):
     def __eq__(self, other):
         if not isinstance(other, Vector):
             return False
-        return abs((self.data - other.data).mean()) < float_eps
+        return (abs(self.data - other.data) <= float_eps).all()
 
     def __mul__(self, other):
         if isinstance(other, (float, int)):
