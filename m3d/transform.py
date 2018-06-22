@@ -2,7 +2,6 @@ import numpy as np
 
 from m3d.vector import Vector
 from m3d.orientation import Orientation
-from m3d.common import float_eps
 
 
 class Transform(object):
@@ -21,9 +20,6 @@ class Transform(object):
         elif isinstance(orientation, np.ndarray):
             if orientation.shape == (3, 3):
                 self.data[:3, :3] = orientation
-            elif orientation.shape == (4, 4):
-                #FIXME: This crappy to take the orientation argument as a Transform...
-                self.data = orientation
             else:
                 raise ValueError()
         elif isinstance(orientation, Orientation):
@@ -81,7 +77,7 @@ class Transform(object):
         """
         Return inverse of Transform
         """
-        return Transform(np.linalg.inv(self.data))
+        return Transform(matrix=np.linalg.inv(self.data))
 
     def invert(self):
         """
@@ -125,8 +121,8 @@ class Transform(object):
 
     @staticmethod
     def from_ros(q, v):
-        orient = Orientation.from_quaternion(q)
+        orient = Orientation.from_quaternion(*q)
         return Transform(orient, Vector(v))
 
     def copy(self):
-        return Transform(self.data.copy())
+        return Transform(matrix=self.data.copy())
