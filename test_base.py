@@ -41,8 +41,7 @@ def test_rotation():
     t.pos.x = 1
     t.orient.rotate_yb(1)
     res = m3d.Transform(
-        m3d.Orientation([[0.54030228, 0, 0.84147096], [0., 1, 0.], [-0.84147096, 0., 0.54030228]]),
-        m3d.Vector(1, 0, 0))
+        m3d.Orientation([[0.54030228, 0, 0.84147096], [0., 1, 0.], [-0.84147096, 0., 0.54030228]]), m3d.Vector(1, 0, 0))
     assert _are_equals(res.data, t.data)
 
 
@@ -221,7 +220,7 @@ def test_rotation_seq_2():
     b.orient.rotate_xb(-1)
     b.pos = b.orient * m3d.Vector(1, 0, 3) * -1
 
-    assert _are_equals(t.inverse().data,  b.data)
+    assert _are_equals(t.inverse().data, b.data)
 
 
 def test_rotation_t():
@@ -409,6 +408,7 @@ def test_eq():
     assert t2.pos != t3.pos
     assert t2.orient != t3.orient
     assert t != t3
+
 
 if __name__ == "__main__":
     test_pc()
