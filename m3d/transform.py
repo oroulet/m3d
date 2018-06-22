@@ -107,6 +107,19 @@ class Orientation(object):
         t = np.array([[np.cos(val), -np.sin(val), 0], [np.sin(val), np.cos(val), 0], [0, 0, 1]])
         self._data[:] = t @ self._data
 
+    def rotate_xt(self, val: float):
+        t = np.array([[1, 0, 0], [0, np.cos(val), -np.sin(val)], [0, np.sin(val), np.cos(val)]])
+        self._data[:] = self._data @ t
+
+    def rotate_yt(self, val: float):
+        t = np.array([[np.cos(val), 0, np.sin(val)], [0, 1, 0], [-np.sin(val), 0, np.cos(val)]])
+        self._data[:] = self._data @ t
+
+    def rotate_zt(self, val: float):
+        t = np.array([[np.cos(val), -np.sin(val), 0], [np.sin(val), np.cos(val), 0], [0, 0, 1]])
+        self._data[:] = self._data @ t
+
+
     def __str__(self):
         return "Orientation(\n{}\n)".format(self.data)
 

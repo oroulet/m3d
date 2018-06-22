@@ -64,7 +64,6 @@ def test_transform():
     t.pos.y = 2
     v = m3d.Vector(1, 0, 0)
     r = t * v
-
     assert r == m3d.Vector(0, 3, 0)
 
 
@@ -223,6 +222,23 @@ def test_rotation_seq_2():
     b.pos = b.orient * m3d.Vector(1, 0, 3) * -1
 
     assert _are_equals(t.inverse().data,  b.data)
+
+
+def test_rotation_t():
+    t = m3d.Transform()
+    t.pos.x = 1
+    t.orient.rotate_zt(np.pi / 2)
+    t.orient.rotate_yt(np.pi / 2)
+    v = m3d.Vector(2, 0, 0)
+    assert t * v == m3d.Vector(1, 0, -2)
+
+
+def test_rotation_t_2():
+    t = m3d.Transform()
+    t.orient.rotate_yt(np.pi / 2)
+    t.orient.rotate_zt(np.pi / 2)
+    v = m3d.Vector(2, 0, 0)
+    assert t * v == m3d.Vector(0, 2, 0)
 
 
 def test_construct():
