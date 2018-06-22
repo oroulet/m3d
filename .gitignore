@@ -1,0 +1,13 @@
+
+.cache*
+.mypy*
+.pyre*
+__pycache*
+build*
+htmlcov*
+*.egg*
+*,cover
+.coverage
+coverage.xml
+dist*
+
