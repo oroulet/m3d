@@ -126,3 +126,6 @@ class Transform(object):
 
     def copy(self):
         return Transform(matrix=self.data.copy())
+
+    def dist(self, other):
+        return self.pos.dist(other.pos) + self.orient.ang_dist(other.orient)

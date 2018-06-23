@@ -382,6 +382,16 @@ def test_ang_dist():
     assert abs(o_inv_dist_m3d - o_inv_dist_math3d) <= m3d.float_eps
 
 
+def test_trans_dist():
+    a = m3d.Transform()
+    b = m3d.Transform()
+    b.pos.x = 3
+    b.orient.rotate_zb(1)
+    b.orient.rotate_yb(1)
+    assert a.dist(b) > 0.1
+    assert b.dist(b) == 0
+
+
 def test_eq():
     t = m3d.Transform()
     t.orient.rotate_yb(1)
