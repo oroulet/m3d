@@ -420,5 +420,11 @@ def test_eq():
     assert t != t3
 
 
+def test_norm():
+    v = m3d.Vector(1, 2, 3)
+    v.normalize()
+    assert abs(v.length - 1) <= m3d.float_eps
+
+
 if __name__ == "__main__":
     test_pc()
