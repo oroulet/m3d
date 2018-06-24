@@ -73,6 +73,12 @@ class Vector(object):
         else:
             raise ValueError()
 
+    def __rmul__(self, other):
+        if isinstance(other, (float, int)):
+            return Vector(self._data * other)
+        else:
+            raise ValueError()
+
     @property
     def length(self):
         return (self.x**2 + self.y**2 + self.z**2)**0.5
@@ -80,3 +86,6 @@ class Vector(object):
     def dist(self, other):
         v = Vector(other.data - self.data)
         return v.length
+
+    def normalize(self):
+        self._data /= self.length
