@@ -84,8 +84,25 @@ class Vector(object):
         return (self.x**2 + self.y**2 + self.z**2)**0.5
 
     def dist(self, other):
+        """
+        return abolute distance to another vector
+        """
         v = Vector(other.data - self.data)
         return v.length
 
     def normalize(self):
+        """
+        Normalize in place vector
+        """
         self._data /= self.length
+
+    def normalized(self):
+        """
+        Return a normalized copy of vector
+        """
+        return Vector(self._data / self.length)
+
+    def cross(self, other):
+        if not isinstance(other, Vector):
+            other = Vector(other)
+        return Vector(np.cross(self.data, other.data))

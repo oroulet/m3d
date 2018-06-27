@@ -5,14 +5,15 @@ from IPython import embed
 import m3d
 
 
-def _are_equals(m1, m2):
+def _are_equals(m1, m2, eps=m3d.float_eps):
     """
     to test equality of math3d and m3d vectors
     """
     m1 = _to_np(m1)
     m2 = _to_np(m2)
 
-    return (abs(m1 - m2) <= m3d.float_eps).all()
+    print("DIST", abs(m1 - m2))
+    return (abs(m1 - m2) <= eps).all()
 
 
 def _to_np(obj):
@@ -424,6 +425,23 @@ def test_norm():
     v = m3d.Vector(1, 2, 3)
     v.normalize()
     assert abs(v.length - 1) <= m3d.float_eps
+
+
+def test_from_xz():
+    x = m3d.Vector(1, 0, 0)
+    z = m3d.Vector(0, 0, 1)
+    orient = m3d.Orientation.from_xz(x, z)
+    assert _are_equals(orient.data, np.identity(3))
+
+    x = m3d.Vector(2, 0, 0.1)
+    z = m3d.Vector(0.1, -0.1, 3)
+    o = m3d.Orientation()
+    o.rotate_yb(1)
+    o.rotate_zb(1)
+    x = o @ x
+    z = o @ z
+    orient = m3d.Orientation.from_xz(x, z)
+    assert _are_equals(o, orient, eps=0.1)
 
 
 if __name__ == "__main__":

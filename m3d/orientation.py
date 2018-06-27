@@ -162,6 +162,23 @@ class Orientation(object):
             np.array([[x * xC + c, xyC - zs, zxC + ys], [xyC + zs, y * yC + c, yzC - xs],
                       [zxC - ys, yzC + xs, z * zC + c]]))
 
+    @staticmethod
+    def from_xz(x_vec, z_vec):
+        """
+        Generate a new Orientation from two vectors using x as reference using x as reference
+        """
+        if not isinstance(x_vec, Vector):
+            x_vec = Vector(x_vec)
+        if not isinstance(z_vec, Vector):
+            z_vec = Vector(z_vec)
+        x_vec.normalize()
+        z_vec.normalize()
+        orient = Orientation()
+        orient._data[:, 0] = x_vec.data
+        orient._data[:, 1] = z_vec.cross(x_vec).data
+        orient._data[:, 2] = np.cross(x_vec.data, orient._data[:, 1])
+        return orient
+
     def to_axis_angle(self, unit_thresh=1e-5):
         # adapted from
         # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
@@ -189,3 +206,5 @@ class Orientation(object):
 
     def copy(self):
         return Orientation(self.data.copy())
+
+
