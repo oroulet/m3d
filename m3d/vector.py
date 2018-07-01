@@ -23,6 +23,9 @@ class Vector(object):
     def __setitem__(self, idx, val):
         self._data[idx] = val
 
+    def copy(self):
+        return Vector(self._data.copy())
+
     @property
     def x(self):
         return float(self._data[0])

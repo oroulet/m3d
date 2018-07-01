@@ -323,6 +323,11 @@ def test_copy():
     new.pos.x = 5
     assert t.pos.x != new.pos.x
     assert t.orient.data[0, 0] != new.orient.data[0, 0]
+    v = t.pos.copy()
+    assert v == t.pos
+    v[1] = 3.33
+    assert v.y != t.pos.y
+    assert v != t.pos
 
 
 def test_substraction():
