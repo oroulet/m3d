@@ -2,6 +2,7 @@ import math3d  # as ref for testing
 import numpy as np
 from IPython import embed
 
+import pytest
 import m3d
 
 
@@ -36,6 +37,33 @@ def test_init():
     assert m3d.Vector(-2, 0, 0) == i.pos
     assert m3d.Orientation() == i.orient
 
+
+def test_transform_init():
+    v = m3d.Vector(1,2,3)
+    o = m3d.Orientation()
+    o.rotate_zb(1)
+    t = m3d.Transform(o, v)
+    assert t.pos == v
+    assert t.orient == o
+    t2 = m3d.Transform(o.data, v.data)
+    assert t2.pos == v
+    assert t2.orient == o
+    assert t == t2
+    with pytest.raises(ValueError):
+        m3d.Transform(np.array([1, 2, 3]), np.array([1, 2, 3]))
+    with pytest.raises(ValueError):
+        m3d.Transform(o.data, np.array([1, 2]))
+
+
+def test_transform_init_ref():
+    v = m3d.Vector(1,2,3)
+    o = m3d.Orientation()
+    o.rotate_zb(1)
+    t = m3d.Transform(o, v)
+    assert t.orient == o
+    o.rotate_xb(1)
+    assert t.orient != o
+ 
 
 def test_rotation():
     t = m3d.Transform()
