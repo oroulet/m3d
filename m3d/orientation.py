@@ -200,9 +200,19 @@ class Orientation(object):
         angle = math.atan2(sina, cosa)
         return Vector(direction), angle
 
-    def rotation_vector(self, unit_thresh=1e-5):
+    def to_rotation_vector(self, unit_thresh=1e-5):
         v, a = self.to_axis_angle(unit_thresh)
         return v * a
+
+    @staticmethod
+    def from_rotation_vector(v):
+        if not isinstance(v, Vector):
+            raise ValueError("Method take a Vector as argument")
+        if (v.data == 0).all():
+            raise ValueError("Not all values in rotation vector can be 0")
+        u = v.normalized()
+        idx = (u.data != 0).argmax()
+        return Orientation.from_axis_angle(u, v[idx] / u[idx])
 
     def copy(self):
         return Orientation(self.data.copy())

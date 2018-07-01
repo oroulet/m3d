@@ -41,6 +41,8 @@ class Transform(object):
             self._data[:3, 3] = vector
         elif isinstance(vector, Vector):
             self._data[:3, 3] = vector.data
+        elif isinstance(vector, (list, tuple)):
+            self._data[:3, 3] = vector
         else:
             raise ValueError("orientation argument should be a numpy array, Orientation or None")
         self._pos = Vector(self._data[:3, 3], dtype=dtype)
@@ -134,12 +136,20 @@ class Transform(object):
 
     @property
     def pose_vector(self):
+        return self.to_pose_vector()
+
+    def to_pose_vector(self):
         """
         Return a representation of transformation as 6 numbers array
         3 for position, and 3 for rotation vector
         """
-        v = self.orient.rotation_vector()
+        v = self.orient.to_rotation_vector()
         return np.array([self.pos.x, self.pos.y, self.pos.z, v.x, v.y, v.z])
+
+    @staticmethod
+    def from_pose_vector(x, y, z, r1, r2, r3):
+        o = Orientation.from_rotation_vector(Vector(r1, r2, r3))
+        return Transform(o, [x, y, z])
 
     def to_ros(self):
         return self.orient.to_quaternion(), self.pos.data

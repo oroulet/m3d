@@ -10,10 +10,12 @@ def _are_equals(m1, m2, eps=m3d.float_eps):
     """
     to test equality of math3d and m3d vectors
     """
+    if isinstance(m1, float) and isinstance(m2, float):
+        return abs(m1 - m2) < eps
+
     m1 = _to_np(m1)
     m2 = _to_np(m2)
 
-    print("DIST", abs(m1 - m2))
     return (abs(m1 - m2) <= eps).all()
 
 
@@ -96,6 +98,40 @@ def test_transform():
 
 
 def test_pose_vector():
+    t = m3d.Transform()
+    t.pos.x = 1
+    t.pos.z = 2
+    t.orient.rotate_yb(1)
+    v = t.to_pose_vector()
+    t2 = t.from_pose_vector(*v)
+    assert t == t2
+
+
+def test_rotation_vector():
+    o = m3d.Orientation()
+    o.rotate_yb(1)
+    o.rotate_zb(1)
+    v = o.to_rotation_vector()
+    o2 = m3d.Orientation.from_rotation_vector(v)
+    assert o == o2
+
+
+def test_rotation_vector_2():
+    o = m3d.Orientation()
+    o.rotate_yb(1.1)
+    v = o.to_rotation_vector()
+    assert _are_equals(v[1], 1.1)
+    o = m3d.Orientation()
+    o.rotate_zb(1.1)
+    v = o.to_rotation_vector()
+    assert _are_equals(v[2], 1.1)
+    o = m3d.Orientation()
+    o.rotate_xb(1.1)
+    v = o.to_rotation_vector()
+    assert _are_equals(v[0], 1.1)
+
+
+def test_pose_vector_math3d():
     t = m3d.Transform()
     t.pos.x = 1
     t.pos.z = 2
@@ -477,5 +513,13 @@ def test_from_xz():
     assert _are_equals(o, orient, eps=0.1)
 
 
-if __name__ == "__main__":
-    test_pc()
+def test_ros():
+    t = m3d.Transform()
+    t.orient.rotate_yb(1)
+    t.orient.rotate_zb(1)
+    t.pos.x = 1
+    q, v = t.to_ros()
+    t1 = t.from_ros(q, v)
+    assert t == t1
+
+
