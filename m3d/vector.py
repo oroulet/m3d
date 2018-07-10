@@ -64,7 +64,8 @@ class Vector(object):
     @property
     def data(self) -> np.ndarray:
         return self._data
-
+    array = data
+    
     def __eq__(self, other):
         if not isinstance(other, Vector):
             return False
