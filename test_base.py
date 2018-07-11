@@ -495,6 +495,17 @@ def test_norm():
     v.normalize()
     assert abs(v.length - 1) <= m3d.float_eps
 
+def test_from_xy():
+    x = m3d.Vector(1, 0, 0)
+    y = m3d.Vector(0, 1, 0)
+    orient = m3d.Orientation.from_xy(x, y)
+    assert _are_equals(orient.data, np.identity(3))
+
+def test_from_yz():
+    y = m3d.Vector(0, 1, 0)
+    z = m3d.Vector(0, 0, 1)
+    orient = m3d.Orientation.from_yz(y, z)
+    assert _are_equals(orient.data, np.identity(3))
 
 def test_from_xz():
     x = m3d.Vector(1, 0, 0)
