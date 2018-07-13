@@ -79,7 +79,7 @@ class Orientation(object):
             else:
                 raise ValueError("Array shape must be 3,x or x,3")
         else:
-            raise ValueError()
+            return NotImplemented
 
     __matmul__ = __mul__
 
