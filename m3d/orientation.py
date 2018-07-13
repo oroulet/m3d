@@ -161,11 +161,45 @@ class Orientation(object):
         return Orientation(
             np.array([[x * xC + c, xyC - zs, zxC + ys], [xyC + zs, y * yC + c, yzC - xs],
                       [zxC - ys, yzC + xs, z * zC + c]]))
+ 
+    @staticmethod
+    def from_xy(x_vec, y_vec):
+        """
+        Generate a new Orientation from two vectors using x as reference
+        """
+        if not isinstance(x_vec, Vector):
+            x_vec = Vector(x_vec)
+        if not isinstance(y_vec, Vector):
+            y_vec = Vector(y_vec)
+        x_vec.normalize()
+        y_vec.normalize()
+        orient = Orientation()
+        orient._data[:, 0] = x_vec.data
+        orient._data[:, 2] = x_vec.cross(y_vec).data
+        orient._data[:, 1] = np.cross(orient._data[:, 2], x_vec.data)
+        return orient
+
+    @staticmethod
+    def from_yz(y_vec, z_vec):
+        """
+        Generate a new Orientation from two vectors using y as reference
+        """
+        if not isinstance(y_vec, Vector):
+            y_vec = Vector(y_vec)
+        if not isinstance(z_vec, Vector):
+            z_vec = Vector(z_vec)
+        y_vec.normalize()
+        z_vec.normalize()
+        orient = Orientation()
+        orient._data[:, 1] = y_vec.data
+        orient._data[:, 0] = y_vec.cross(z_vec).data
+        orient._data[:, 2] = np.cross(orient._data[:, 0], y_vec.data)
+        return orient
 
     @staticmethod
     def from_xz(x_vec, z_vec):
         """
-        Generate a new Orientation from two vectors using x as reference using x as reference
+        Generate a new Orientation from two vectors using x as reference
         """
         if not isinstance(x_vec, Vector):
             x_vec = Vector(x_vec)
