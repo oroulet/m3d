@@ -77,6 +77,12 @@ class Vector(object):
         else:
             raise ValueError()
 
+    def __truediv__(self, other):
+        if isinstance(other, (float, int)):
+            return Vector(self._data / other)
+        else:
+            raise ValueError()
+
     def __rmul__(self, other):
         if isinstance(other, (float, int)):
             return Vector(self._data * other)

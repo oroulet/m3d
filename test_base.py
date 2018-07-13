@@ -393,6 +393,23 @@ def test_copy():
     assert v.y != t.pos.y
     assert v != t.pos
 
+def test_vect_mul():
+    v1 = m3d.Vector(10, 10, 10)
+    const_val = 2
+    const_val_2 = -5
+    v_res = v1 * const_val
+    v_res_2 = v1 * const_val_2
+    assert v_res == m3d.Vector(20, 20, 20)
+    assert v_res_2 == m3d.Vector(-50, -50, -50)
+
+def test_vect_div():
+    v1 = m3d.Vector(10, 10, 10)
+    const_val = 2
+    const_val_2 = -5
+    v_res = v1 / const_val
+    v_res_2 = v1 / const_val_2
+    assert v_res == m3d.Vector(5, 5, 5)
+    assert v_res_2 == m3d.Vector(-2, -2, -2)
 
 def test_substraction():
     v1 = m3d.Vector(1, 2, 3)
