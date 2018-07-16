@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="m3d",
-    version="0.3.5",
+    version="0.3.6",
     description="Python3 3D transformation library with object oriented API and MIT licensed",
     author="Olivier Roulet-Dubonnet",
     author_email="olivier.roulet@gmail.com",
