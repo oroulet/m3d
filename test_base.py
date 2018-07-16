@@ -10,7 +10,7 @@ def _are_equals(m1, m2, eps=m3d.float_eps):
     """
     to test equality of math3d and m3d vectors
     """
-    if isinstance(m1, float) and isinstance(m2, float):
+    if isinstance(m1, (float, np.float32)) and isinstance(m2, (float, np.float32)):
         return abs(m1 - m2) < eps
 
     m1 = _to_np(m1)
@@ -25,7 +25,7 @@ def _to_np(obj):
     elif isinstance(obj, (m3d.Vector, m3d.Orientation, m3d.Transform)):
         return obj.data
     else:
-        raise ValueError("Could not convert ob to nupy array", obj, type(obj))
+        raise ValueError("Could not convert obj to nupy array", obj, type(obj))
 
 
 def test_init():
@@ -551,3 +551,6 @@ def test_ros():
     assert t == t1
 
 
+def test_null_rotation_vector():
+    o = m3d.Orientation.from_rotation_vector((0, 0, 0))
+    assert np.array_equal(o.data, np.identity(3))

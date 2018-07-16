@@ -216,7 +216,7 @@ class Orientation(object):
     def to_axis_angle(self, unit_thresh=1e-5):
         # adapted from
         # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
-        M = np.asarray(self._data, dtype=np.float)
+        M = np.asarray(self._data, dtype=np.float32)
         # direction: unit eigenvector of R33 corresponding to eigenvalue of 1
         L, W = np.linalg.eig(M.T)
         i = np.where(np.abs(L - 1.0) < unit_thresh)[0]
@@ -240,10 +240,12 @@ class Orientation(object):
 
     @staticmethod
     def from_rotation_vector(v):
+        if isinstance(v, (np.ndarray, list, tuple)):
+            v = Vector(*v)
         if not isinstance(v, Vector):
             raise ValueError("Method take a Vector as argument")
         if (v.data == 0).all():
-            raise ValueError("Not all values in rotation vector can be 0")
+            return Orientation(np.identity(3, dtype=np.float32))
         u = v.normalized()
         idx = (u.data != 0).argmax()
         return Orientation.from_axis_angle(u, v[idx] / u[idx])
