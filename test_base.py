@@ -554,3 +554,17 @@ def test_ros():
 def test_null_rotation_vector():
     o = m3d.Orientation.from_rotation_vector((0, 0, 0))
     assert np.array_equal(o.data, np.identity(3))
+
+
+def test_update_trans_xyz():
+    t = m3d.Transform()
+    t.orient.rotate_yb(1)
+    t.orient.rotate_zb(1)
+    t.pos.x = 1
+
+    t.pos.x += 1.2
+    assert _are_equals(t.pos.x, 2.2)
+    assert _are_equals(t.data[0, 3], 2.2)
+    t.pos.y += 1.2
+    assert _are_equals(t.pos.y, 1.2)
+    assert _are_equals(t.data[1, 3], 1.2)
