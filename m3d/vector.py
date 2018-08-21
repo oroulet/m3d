@@ -67,9 +67,7 @@ class Vector(object):
     array = data
     
     def __eq__(self, other):
-        if not isinstance(other, Vector):
-            return False
-        return (abs(self.data - other.data) <= float_eps).all()
+        return self.similar(other)
 
     def __mul__(self, other):
         if isinstance(other, (float, int)):

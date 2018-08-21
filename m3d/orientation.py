@@ -52,6 +52,9 @@ class Orientation(object):
     def ang_dist(self, other):
         r = self * other.inverse()
         trace_r = r.data[0, 0] + r.data[1, 1] + r.data[2, 2]
+        if trace_r > 3:
+            # might happen with approximations/rouding
+            trace_r = 3
         return np.arccos((trace_r - 1) / 2)
 
     @property
@@ -84,11 +87,7 @@ class Orientation(object):
     __matmul__ = __mul__
 
     def __eq__(self, other):
-        if not isinstance(other, Orientation):
-            return False
-        # FIXME; This is dead simple but can we make it more efficient?
-        v = Vector(1, 2, 3)
-        return self @ v == other @ v
+        return self.similar(other)
 
     def to_quaternion(self):
         '''

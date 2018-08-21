@@ -5,6 +5,9 @@ from IPython import embed
 import pytest
 import m3d
 
+# when exporting and reimporting a transform to another expression we must accept a higher error then eps
+CONVERTION_ERROR = 1000 * m3d.float_eps
+
 
 def _are_equals(m1, m2, eps=m3d.float_eps):
     """
@@ -113,7 +116,7 @@ def test_rotation_vector():
     o.rotate_zb(1)
     v = o.to_rotation_vector()
     o2 = m3d.Orientation.from_rotation_vector(v)
-    assert o == o2
+    assert o.similar(o2, CONVERTION_ERROR)
 
 
 def test_rotation_vector_2():
@@ -316,9 +319,9 @@ def test_construct():
     assert t.pos.z == 2
     t.pos = m3d.Vector()
     t.orient.rotate_zb(-1)
-    assert t == m3d.Transform(matrix=np.identity(4))
+    assert t == m3d.Transform()
     t.orient = o
-    assert t != m3d.Transform(matrix=np.identity(4))
+    assert t != m3d.Transform()
 
 
 def test_orient():
@@ -335,7 +338,7 @@ def test_quaternion():
     o.rotate_zb(np.pi / 3)
     q = o.to_quaternion()
     o2 = m3d.Orientation.from_quaternion(*q)
-    assert o == o2
+    assert o.similar(o2, CONVERTION_ERROR)
 
     o_math = math3d.Orientation()
     o_math.rotate_xb(np.pi / 3)
@@ -351,7 +354,7 @@ def test_axis_angle():
     o.rotate_zb(np.pi / 3)
     v, a = o.to_axis_angle()
     o2 = m3d.Orientation.from_axis_angle(v, a)
-    assert o == o2
+    assert o.similar(o2, CONVERTION_ERROR)
 
 
 def test_pc():
@@ -486,12 +489,12 @@ def test_eq():
     t.pos.x = 1
     v = m3d.Vector()
     o = m3d.Orientation()
-    assert t != v
-    assert v != t
-    assert o != v
-    assert v != o
-    assert o != t
-    assert t != o
+    with pytest.raises(ValueError):
+        assert t != v
+    with pytest.raises(ValueError):
+        assert v != t
+    with pytest.raises(ValueError):
+        assert o != v
     t2 = t.copy()
     assert t == t2
     assert t.pos == t2.pos

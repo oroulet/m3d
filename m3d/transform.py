@@ -110,11 +110,7 @@ class Transform(object):
         self._data = np.linalg.inv(self._data)
 
     def __eq__(self, other):
-        if not isinstance(other, Transform):
-            return False
-        # FIXME; This is dead simple but can we make it more efficient?
-        v = Vector([1, 2, 3])
-        return self @ v == other @ v
+        return self.similar(other)
 
     def __mul__(self, other):
         if isinstance(other, Vector):
