@@ -8,7 +8,7 @@ import m3d
 
 def _are_equals(m1, m2, eps=m3d.float_eps):
     """
-    to test equality of math3d and m3d vectors
+    to test equality of two objects with a tolerance
     """
     if isinstance(m1, (float, np.float32)) and isinstance(m2, (float, np.float32)):
         return abs(m1 - m2) < eps
@@ -568,3 +568,38 @@ def test_update_trans_xyz():
     t.pos.y += 1.2
     assert _are_equals(t.pos.y, 1.2)
     assert _are_equals(t.data[1, 3], 1.2)
+
+
+def test_similar():
+    t = m3d.Transform()
+    t.pos.x = 1
+    t.pos.y = 2
+    t.pos.z = 3
+    t.orient.rotate_yb(1)
+
+    t2 = t.copy()
+    t2.orient.rotate_zb(1)
+
+    t3 = t.copy()
+    t3.orient.rotate_zb(1 - 4 * np.pi)
+
+    t4 = t3.copy()
+    t4.pos.x += m3d.float_eps
+
+    t5 = t4.copy()
+    t5.pos.x += 0.1
+
+    assert not t.similar(t2)
+    assert t2.similar(t3)
+    assert t3.similar(t4)
+    assert t2.similar(t4)
+    assert t4.similar(t2)
+    assert t4.orient.similar(t2.orient)
+    assert not t.similar(t4)
+    assert not t.orient.similar(t4.orient)
+    assert not t4.similar(t)
+    assert not t4.similar(t5)
+    assert not t.similar(t5)
+    assert t4.pos.similar(t5.pos, 0.2)
+    assert t4.orient.similar(t5.orient, 0.2)
+    assert t4.similar(t5, 0.2)

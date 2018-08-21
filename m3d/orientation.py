@@ -253,4 +253,11 @@ class Orientation(object):
     def copy(self):
         return Orientation(self.data.copy())
 
-
+    def similar(self, other, tol=float_eps):
+        """
+        Return True if angular distance to other Orientation is less than tol
+        return False otherwise
+        """
+        if not isinstance(other, Orientation):
+            raise ValueError()
+        return self.ang_dist(other) <= tol

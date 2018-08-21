@@ -100,6 +100,15 @@ class Vector(object):
         v = Vector(other.data - self.data)
         return v.length
 
+    def similar(self, other, tol=float_eps):
+        """
+        Return True if distance to other Vector is less than tol
+        return False otherwise
+        """
+        if not isinstance(other, Vector):
+            raise ValueError()
+        return self.dist(other) <= tol
+
     def normalize(self):
         """
         Normalize in place vector

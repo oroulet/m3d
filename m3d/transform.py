@@ -2,6 +2,7 @@ import numpy as np
 
 from m3d.vector import Vector
 from m3d.orientation import Orientation
+from m3d.common import float_eps
 
 
 class Transform(object):
@@ -167,3 +168,12 @@ class Transform(object):
         Return distance equivalent between this matrix and a second one
         """
         return self.pos.dist(other.pos) + self.orient.ang_dist(other.orient)
+
+    def similar(self, other, tol=float_eps):
+        """
+        Return True if distance to other transform is less than tol
+        return False otherwise
+        """
+        if not isinstance(other, Transform):
+            raise ValueError()
+        return self.dist(other) <= tol
