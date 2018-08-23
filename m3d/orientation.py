@@ -258,5 +258,5 @@ class Orientation(object):
         return False otherwise
         """
         if not isinstance(other, Orientation):
-            raise ValueError()
+            raise ValueError("Expecting an Orientation object, received {} of type {}".format(other, type(other)))
         return self.ang_dist(other) <= tol

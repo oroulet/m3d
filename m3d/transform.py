@@ -171,5 +171,5 @@ class Transform(object):
         return False otherwise
         """
         if not isinstance(other, Transform):
-            raise ValueError()
+            raise ValueError("Expecting a Transform object, received {} of type {}".format(other, type(other)))
         return self.dist(other) <= tol

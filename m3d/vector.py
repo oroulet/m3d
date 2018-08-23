@@ -104,7 +104,7 @@ class Vector(object):
         return False otherwise
         """
         if not isinstance(other, Vector):
-            raise ValueError()
+            raise ValueError("Expecting a Vector object, received {} of type {}".format(other, type(other)))
         return self.dist(other) <= tol
 
     def normalize(self):
