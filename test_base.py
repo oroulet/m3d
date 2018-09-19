@@ -242,7 +242,7 @@ def test_inverse():
     assert (t1 * t1.inverse()) == m3d.Transform()
     assert (t2 * t2.inverse()) == m3d.Transform(matrix=np.identity(4))
     assert (t2 * t2.inverse()) == m3d.Transform()
-    assert (t1 * t2 * t1.inverse() * t2.inverse()) == m3d.Transform(matrix=np.identity(4))
+    assert (t1 * t2 * t1.inverse() * t2.inverse()).similar(m3d.Transform(matrix=np.identity(4)), CONVERTION_ERROR)
     assert t1.inverse() * (t1 * v) == v
 
 
