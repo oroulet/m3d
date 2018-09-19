@@ -42,7 +42,8 @@ class Orientation(object):
         self._data[:] = self._data @ t
 
     def __str__(self):
-        return "Orientation(\n{}\n)".format(self.data)
+        data = np.array2string(self.data, separator=', ')
+        return "Orientation(\n{}\n)".format(data)
 
     __repr__ = __str__
 
