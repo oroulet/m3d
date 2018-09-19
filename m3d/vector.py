@@ -89,7 +89,7 @@ class Vector(object):
 
     @property
     def length(self):
-        return (self.x**2 + self.y**2 + self.z**2)**0.5
+        return float(np.linalg.norm(self.data))
 
     def dist(self, other):
         """
@@ -111,12 +111,16 @@ class Vector(object):
         """
         Normalize in place vector
         """
+        if self.length == 0:
+            return
         self._data /= self.length
 
     def normalized(self):
         """
         Return a normalized copy of vector
         """
+        if self.length == 0:
+            return Vector(self.data)
         return Vector(self._data / self.length)
 
     def cross(self, other):
