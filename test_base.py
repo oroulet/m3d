@@ -302,10 +302,10 @@ def test_rotation_t():
 
 def test_rotation_t_2():
     t = m3d.Transform()
-    t.orient.rotate_yt(np.pi / 2)
-    t.orient.rotate_zt(np.pi / 2)
+    t.orient.rotate_yt(-np.pi / 2)
+    t.orient.rotate_xt(np.pi / 3)
     v = m3d.Vector(2, 0, 0)
-    assert t * v == m3d.Vector(0, 2, 0)
+    assert t * v == m3d.Vector(0, 0, 2)
 
 
 def test_construct():
@@ -606,3 +606,28 @@ def test_similar():
     assert t4.pos.similar(t5.pos, 0.2)
     assert t4.orient.similar(t5.orient, 0.2)
     assert t4.similar(t5, 0.2)
+
+
+def test_orient_except():
+    with pytest.raises(ValueError):
+        o = m3d.Orientation(np.identity(4))
+    with pytest.raises(ValueError):
+        o = m3d.Orientation("whatever")
+    o = m3d.Orientation()
+    with pytest.raises(ValueError):
+        o * np.identity(4)
+
+
+def test_vector_except():
+    with pytest.raises(ValueError):
+        o = m3d.Vector(np.identity(4))
+    with pytest.raises(ValueError):
+        o = m3d.Vector("whatever")
+    with pytest.raises(ValueError):
+        o = m3d.Vector([1, 2, 3, 4])
+    o = m3d.Vector([1, 2, 3])
+
+
+def test_trans_init_except():
+    with pytest.raises(ValueError):
+        o = m3d.Vector(np.identity(5))

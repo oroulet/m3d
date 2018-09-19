@@ -9,13 +9,18 @@ from m3d.common import float_eps
 class Orientation(object):
     def __init__(self, data: np.ndarray = None, dtype=np.float32):
         if isinstance(data, np.ndarray):
-            self._data = data
+            if data.shape == (3, 3):
+                self._data = data
+            else:
+                raise ValueError(f"A numpy array of size (3, 3) is expected not {data.shape}")
         elif isinstance(data, list):
             self._data = np.array(data)
+            if self._data.shape != (3, 3):
+                raise ValueError(f"Creating an array from argument {data} did not lead to an array of shape (3, 3)")
         elif data is None:
             self._data = np.identity(3, dtype=dtype)
         else:
-            raise ValueError()
+            raise ValueError(f"A numpy array of size (3, 3) is expected not {data}")
 
     def rotate_xb(self, val: float):
         t = np.array([[1, 0, 0], [0, np.cos(val), -np.sin(val)], [0, np.sin(val), np.cos(val)]])

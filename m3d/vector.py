@@ -11,9 +11,15 @@ class Vector(object):
 
     def __init__(self, x=0.0, y=0.0, z=0.0, dtype=np.float32):
         if isinstance(x, (list, tuple)):
-            self._data = np.array(x, dtype=dtype)
+            if len(x) == 3:
+                self._data = np.array(x, dtype=dtype)
+            else:
+                raise ValueError(f"A list of length 3 is expected, got {x}")
         elif isinstance(x, np.ndarray):
-            self._data = x
+            if x.shape == (3,):
+                self._data = x
+            else:
+                raise ValueError(f"A array of shape (3,) is expected got {x}")
         else:
             self._data = np.array([float(x), float(y), float(z)], dtype=dtype)
 
