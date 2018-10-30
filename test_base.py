@@ -631,3 +631,17 @@ def test_vector_except():
 def test_trans_init_except():
     with pytest.raises(ValueError):
         o = m3d.Vector(np.identity(5))
+
+
+def test_unit_vectors():
+    assert m3d.vector.e0 == m3d.Vector(1, 0, 0)
+    assert m3d.vector.e1 == m3d.Vector(0, 1, 0)
+    assert m3d.vector.e2 == m3d.Vector(0, 0, 1)
+    t = m3d.Transform()
+    assert m3d.vector.ex == t.orient.vec_x
+    assert m3d.vector.ey == t.orient.vec_y
+    assert m3d.vector.ez == t.orient.vec_z
+    t.orient.rotate_zb(1)
+    assert m3d.vector.ex != t.orient.vec_x
+    assert m3d.vector.ey != t.orient.vec_y
+    assert m3d.vector.ez == t.orient.vec_z

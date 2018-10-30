@@ -133,3 +133,9 @@ class Vector(object):
         if not isinstance(other, Vector):
             other = Vector(other)
         return Vector(np.cross(self.data, other.data))
+
+
+# some units vectors
+e0 = ex = Vector(1, 0, 0)
+e1 = ey = Vector(0, 1, 0)
+e2 = ez = Vector(0, 0, 1)

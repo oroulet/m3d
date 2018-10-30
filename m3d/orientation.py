@@ -267,11 +267,14 @@ class Orientation(object):
             raise ValueError("Expecting an Orientation object, received {} of type {}".format(other, type(other)))
         return self.ang_dist(other) <= tol
 
+    @property
     def vec_x(self):
         return Vector(self._data[:, 0])
 
+    @property
     def vec_y(self):
         return Vector(self._data[:, 1])
 
+    @property
     def vec_z(self):
         return Vector(self._data[:, 2])
