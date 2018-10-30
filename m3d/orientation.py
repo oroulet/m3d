@@ -266,3 +266,12 @@ class Orientation(object):
         if not isinstance(other, Orientation):
             raise ValueError("Expecting an Orientation object, received {} of type {}".format(other, type(other)))
         return self.ang_dist(other) <= tol
+
+    def vec_x(self):
+        return Vector(self._data[:, 0])
+
+    def vec_y(self):
+        return Vector(self._data[:, 1])
+
+    def vec_z(self):
+        return Vector(self._data[:, 2])
