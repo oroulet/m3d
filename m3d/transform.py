@@ -12,9 +12,9 @@ class Transform(object):
     Rmq:
     When creating a transform from a 4*4 Matrix, the matrix is directly used
     as the Transform data
-    When accessing/modifying the Orientation or Vector object you are 
+    When accessing/modifying the Orientation or Vector object you are
     modifying a vew of the matrix data
-    When creating a new Transform object from an Orientation and 
+    When creating a new Transform object from an Orientation and
     Vector or 2 numpy arrays, you are copying them
     """
 
@@ -107,7 +107,7 @@ class Transform(object):
         """
         In-place inverse the matrix
         """
-        self._data = np.linalg.inv(self._data)
+        self._data[:,:] = np.linalg.inv(self._data)
 
     def __eq__(self, other):
         return self.similar(other)
