@@ -202,7 +202,7 @@ class Orientation(object):
         return orient
 
     @staticmethod
-    def from_xz(x_vec, z_vec):
+    def from_xz(x_vec, z_vec, ref='x'):
         """
         Generate a new Orientation from two vectors using x as reference
         """
@@ -213,9 +213,17 @@ class Orientation(object):
         x_vec.normalize()
         z_vec.normalize()
         orient = Orientation()
-        orient._data[:, 0] = x_vec.data
         orient._data[:, 1] = z_vec.cross(x_vec).data
-        orient._data[:, 2] = np.cross(x_vec.data, orient._data[:, 1])
+
+        if ref=='x':
+            orient._data[:, 0] = x_vec.data
+            orient._data[:, 2] = np.cross(x_vec.data, orient._data[:, 1])
+        elif ref=='z':
+            orient._data[:, 2] = z_vec.data
+            orient._data[:, 0] = np.cross(orient._data[:, 1], z_vec.data)
+        else:
+            raise ValueError('Value of ref can only be x or z')
+
         return orient
 
     def to_axis_angle(self, unit_thresh=1e-4):
