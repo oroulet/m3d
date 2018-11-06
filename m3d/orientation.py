@@ -218,7 +218,7 @@ class Orientation(object):
         orient._data[:, 2] = np.cross(x_vec.data, orient._data[:, 1])
         return orient
 
-    def to_axis_angle(self, unit_thresh=1e-5):
+    def to_axis_angle(self, unit_thresh=1e-4):
         # adapted from
         # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
         M = np.asarray(self._data, dtype=np.float32)
