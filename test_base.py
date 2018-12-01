@@ -648,9 +648,10 @@ def test_unit_vectors():
 
 
 def test_vector_dot():
-    d1 = np.array([1, 2, 3])
+    d1 = np.array([1, 2, -3])
     d2 = np.array([2, 2, 2])
     v1 = m3d.Vector(d1)
     v2 = m3d.Vector(d2)
     assert np.dot(d1, d2) == v1.dot(v2)
     assert v1.dot(v2) == v1 @ v2
+    assert v1 @ v1 == v1.length ** 2 
