@@ -134,6 +134,14 @@ class Vector(object):
             other = Vector(other)
         return Vector(np.cross(self.data, other.data))
 
+    def dot(self, other):
+        if not isinstance(other, Vector):
+            other = Vector(other)
+        return np.dot(self.data, other.data)
+
+    __matmul__ = dot
+
+
 
 # some units vectors
 e0 = ex = Vector(1, 0, 0)
