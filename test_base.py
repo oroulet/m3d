@@ -645,3 +645,12 @@ def test_unit_vectors():
     assert m3d.vector.ex != t.orient.vec_x
     assert m3d.vector.ey != t.orient.vec_y
     assert m3d.vector.ez == t.orient.vec_z
+
+
+def test_vector_dot():
+    d1 = np.array([1, 2, 3])
+    d2 = np.array([2, 2, 2])
+    v1 = m3d.Vector(d1)
+    v2 = m3d.Vector(d2)
+    assert np.dot(d1, d2) == v1.dot(v2)
+    assert v1.dot(v2) == v1 @ v2
