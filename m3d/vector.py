@@ -65,13 +65,16 @@ class Vector(object):
     def __add__(self, other):
         return Vector(self.data + other.data)
 
+    def __neg__(self):
+        return Vector(-self._data)
+
     __repr__ = __str__
 
     @property
     def data(self) -> np.ndarray:
         return self._data
     array = data
-    
+
     def __eq__(self, other):
         return self.similar(other)
 
