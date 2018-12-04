@@ -655,3 +655,20 @@ def test_vector_dot():
     assert np.dot(d1, d2) == v1.dot(v2)
     assert v1.dot(v2) == v1 @ v2
     assert v1 @ v1 == v1.length ** 2 
+
+
+def test_vector_projection():
+
+    v1 = m3d.Vector(1, 1, 1)
+    v2 = m3d.Vector(2, 2, 2)
+
+    vx = m3d.Vector(1, 0, 0)
+    vy = m3d.Vector(0, 1, 0)
+    vz = m3d.Vector(0, 0, 1)
+
+    assert v1.projection(vx) == vx
+    assert v1.projection(vy) == vy
+    assert v1.projection(vz) == vz
+
+    assert v1.projection(v2) == v1
+    assert v2.projection(v1) == v2

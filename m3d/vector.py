@@ -142,13 +142,13 @@ class Vector(object):
             other = Vector(other)
         return np.dot(self.data, other.data)
 
+    __matmul__ = dot
+
     def projection(self, other):
         if not isinstance(other, Vector):
             other = Vector(other)
         other = other.normalized()
         return self.dot(other) * other
-
-    __matmul__ = dot
 
 
 
