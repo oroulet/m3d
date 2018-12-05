@@ -144,12 +144,16 @@ class Vector(object):
 
     __matmul__ = dot
 
-    def projection(self, other):
+    def project(self, other):
         if not isinstance(other, Vector):
             other = Vector(other)
         other = other.normalized()
         return self.dot(other) * other
 
+    def angle(self, other):
+        cos = self.dot(other) / (self.length * other.length)
+        angle = np.arccos(np.clip(cos, -1, 1))
+        return angle
 
 
 # some units vectors

@@ -657,7 +657,7 @@ def test_vector_dot():
     assert v1 @ v1 == v1.length ** 2 
 
 
-def test_vector_projection():
+def test_vector_project():
 
     v1 = m3d.Vector(1, 1, 1)
     v2 = m3d.Vector(2, 2, 2)
@@ -666,9 +666,26 @@ def test_vector_projection():
     vy = m3d.Vector(0, 1, 0)
     vz = m3d.Vector(0, 0, 1)
 
-    assert v1.projection(vx) == vx
-    assert v1.projection(vy) == vy
-    assert v1.projection(vz) == vz
+    assert v1.project(vx) == vx
+    assert v1.project(vy) == vy
+    assert v1.project(vz) == vz
 
-    assert v1.projection(v2) == v1
-    assert v2.projection(v1) == v2
+    assert v1.project(v2) == v1
+    assert v2.project(v1) == v2
+
+
+def test_vector_angle():
+
+    v1 = m3d.Vector(1, 1, 1)
+    v2 = m3d.Vector(2, 2, 2)
+
+    vx = m3d.Vector(1, 0, 0)
+    vy = m3d.Vector(0, 1, 0)
+    vz = m3d.Vector(0, 0, 1)
+
+    assert vx.angle(vx) == 0
+    assert vx.angle(vy) == np.pi/2
+    assert vx.angle(vz) == np.pi/2
+
+    assert v1.angle(v2) == 0
+    assert v2.angle(v1) == 0
