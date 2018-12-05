@@ -144,6 +144,12 @@ class Vector(object):
 
     __matmul__ = dot
 
+    def projection(self, other):
+        if not isinstance(other, Vector):
+            other = Vector(other)
+        other = other.normalized()
+        return self.dot(other) * other
+
 
 
 # some units vectors
