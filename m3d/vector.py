@@ -150,14 +150,15 @@ class Vector(object):
         other = other.normalized()
         return self.dot(other) * other
 
-    def angle(self, other, vperp=None):
+    def angle(self, other, normal_vector=None):
         """
-        If provided, third vector would be used as positive direction for perpendicular vector.
+        If provided, normal_vector is a vector defining the reference plane to be used to compute sign of angle.
+        Otherwise, returned angle is between 0 and pi.
         """
         cos = self.dot(other) / (self.length * other.length)
         angle = np.arccos(np.clip(cos, -1, 1))
-        if vperp:
-            angle = angle * np.sign(vperp.dot(self.cross(other)))
+        if normal_vector is not None:
+            angle = angle * np.sign(normal_vector.dot(self.cross(other)))
         return angle
 
 
