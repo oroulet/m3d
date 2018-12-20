@@ -689,3 +689,26 @@ def test_vector_angle():
 
     assert v1.angle(v2) == 0
     assert v2.angle(v1) == 0
+
+
+def test_vector_angle_perp():
+
+    v1 = m3d.Vector(1, 0, 0)
+    v2 = m3d.Vector(1, 1, 0)
+    v3 = m3d.Vector(1, -1, 0)
+
+    vx = m3d.Vector(1, 0, 0)
+    vy = m3d.Vector(0, 1, 0)
+    vz = m3d.Vector(0, 0, 1)
+
+    assert vx.angle(vx, vz) == 0
+    assert vx.angle(vy, vz) == np.pi/2
+    assert vx.angle(vz, vy) == -np.pi/2
+
+    # Flip nominal direction for perpendicular vector
+    assert vx.angle(vx, -vz) == 0
+    assert vx.angle(vy, -vz) == -np.pi/2
+    assert vx.angle(vz, -vy) == np.pi/2
+
+    assert v1.angle(v2, vz) == -v1.angle(v2, -vz)
+    assert v1.angle(v2, vz) == v1.angle(v3, -vz)
