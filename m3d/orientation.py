@@ -166,7 +166,7 @@ class Orientation(object):
         return Orientation(
             np.array([[x * xC + c, xyC - zs, zxC + ys], [xyC + zs, y * yC + c, yzC - xs],
                       [zxC - ys, yzC + xs, z * zC + c]]))
- 
+
     @staticmethod
     def from_xy(x_vec, y_vec):
         """
@@ -213,14 +213,15 @@ class Orientation(object):
         x_vec.normalize()
         z_vec.normalize()
         orient = Orientation()
-        orient._data[:, 1] = z_vec.cross(x_vec).data
+        orient._data[:, 1] = z_vec.cross(x_vec).normalized().data
 
         if ref=='x':
             orient._data[:, 0] = x_vec.data
             orient._data[:, 2] = np.cross(x_vec.data, orient._data[:, 1])
         elif ref=='z':
             orient._data[:, 2] = z_vec.data
-            orient._data[:, 0] = np.cross(orient._data[:, 1], z_vec.data)
+            orient._data[:, 0] = Vector(np.cross(orient._data[:, 1], z_vec.data)).normalized().data
+
         else:
             raise ValueError('Value of ref can only be x or z')
 
