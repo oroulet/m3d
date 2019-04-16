@@ -180,8 +180,8 @@ class Orientation(object):
         y_vec.normalize()
         orient = Orientation()
         orient._data[:, 0] = x_vec.data
-        orient._data[:, 2] = x_vec.cross(y_vec).data
-        orient._data[:, 1] = np.cross(orient._data[:, 2], x_vec.data)
+        orient._data[:, 2] = x_vec.cross(y_vec).normalized().data
+        orient._data[:, 1] = Vector(np.cross(orient._data[:, 2], x_vec.data)).normalized().data
         return orient
 
     @staticmethod
@@ -197,8 +197,8 @@ class Orientation(object):
         z_vec.normalize()
         orient = Orientation()
         orient._data[:, 1] = y_vec.data
-        orient._data[:, 0] = y_vec.cross(z_vec).data
-        orient._data[:, 2] = np.cross(orient._data[:, 0], y_vec.data)
+        orient._data[:, 0] = y_vec.cross(z_vec).normalized().data
+        orient._data[:, 2] = Vector(np.cross(orient._data[:, 0], y_vec.data)).normalized().data
         return orient
 
     @staticmethod
@@ -215,10 +215,10 @@ class Orientation(object):
         orient = Orientation()
         orient._data[:, 1] = z_vec.cross(x_vec).normalized().data
 
-        if ref=='x':
+        if ref == 'x':
             orient._data[:, 0] = x_vec.data
-            orient._data[:, 2] = np.cross(x_vec.data, orient._data[:, 1])
-        elif ref=='z':
+            orient._data[:, 2] = Vector(np.cross(x_vec.data, orient._data[:, 1])).normalized().data
+        elif ref == 'z':
             orient._data[:, 2] = z_vec.data
             orient._data[:, 0] = Vector(np.cross(orient._data[:, 1], z_vec.data)).normalized().data
 
