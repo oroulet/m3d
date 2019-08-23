@@ -33,6 +33,14 @@ class Quaternion(object):
         """
         return self._data
 
+    @property
+    def scalar(self):
+        return self._data[0]
+
+    @property   
+    def vec(self):
+        return self._data[1:]
+
     def __rmul__(self, other):
         if isinstance(other, (float, int)):
             return Quaternion(self._data * other)
