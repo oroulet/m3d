@@ -712,3 +712,25 @@ def test_vector_angle_perp():
 
     assert v1.angle(v2, vz) == -v1.angle(v2, -vz)
     assert v1.angle(v2, vz) == v1.angle(v3, -vz)
+
+
+def test_quaternion_class():
+    o = m3d.Orientation()
+    o.rotate_xb(np.pi / 3)
+    o.rotate_zb(np.pi / 3)
+    q = o.to_quaternion()
+    q_m3d = m3d.Quaternion(q)
+    q_math3d = math3d.Quaternion(*q_m3d.data)
+
+    q_m3d_product = q_m3d * q_m3d
+
+    q_math3d_product = q_math3d * q_math3d
+
+    assert q_m3d_product.data == q_math3d_product.array
+
+
+def test_dual_quaternion_unit_condition():
+    for _ in range(20):
+        t = m3d.Transform.from_pose_vector(*np.random.rand(6))
+        dq = m3d.DualQuaternion.from_transformation(t)
+        assert dq.unity_condition
