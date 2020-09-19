@@ -44,7 +44,7 @@ def test_init():
 
 
 def test_transform_init():
-    v = m3d.Vector(1,2,3)
+    v = m3d.Vector(1, 2, 3)
     o = m3d.Orientation()
     o.rotate_zb(1)
     t = m3d.Transform(o, v)
@@ -61,21 +61,24 @@ def test_transform_init():
 
 
 def test_transform_init_ref():
-    v = m3d.Vector(1,2,3)
+    v = m3d.Vector(1, 2, 3)
     o = m3d.Orientation()
     o.rotate_zb(1)
     t = m3d.Transform(o, v)
     assert t.orient == o
     o.rotate_xb(1)
     assert t.orient != o
- 
+
 
 def test_rotation():
     t = m3d.Transform()
     t.pos.x = 1
     t.orient.rotate_yb(1)
-    res = m3d.Transform(
-        m3d.Orientation([[0.54030228, 0, 0.84147096], [0., 1, 0.], [-0.84147096, 0., 0.54030228]]), m3d.Vector(1, 0, 0))
+    res = m3d.Transform(m3d.Orientation([
+        [0.54030228, 0, 0.84147096],
+        [0., 1, 0.],
+        [-0.84147096, 0., 0.54030228],
+    ]), m3d.Vector(1, 0, 0))
     assert _are_equals(res.data, t.data)
 
 
@@ -221,6 +224,18 @@ def test_inverse_trans():
     t.orient.rotate_yb(np.pi / 2)
     v = m3d.Vector(2, 0, 0)
     assert t * v == m3d.Vector(1, 2, 0)
+
+
+def test_inverse_invert():
+    t = m3d.Transform()
+    t.orient.rotate_xb(np.pi / 3)
+    t.pos.x = 1
+    t1 = t.copy()
+    t2 = t1.inverse()
+    n = t1.invert()
+    assert n == None
+    assert _are_equals(t1, t2)
+    assert _are_equals(t * t1, m3d.Transform())
 
 
 def test_inverse():
@@ -396,6 +411,7 @@ def test_copy():
     assert v.y != t.pos.y
     assert v != t.pos
 
+
 def test_vect_mul():
     v1 = m3d.Vector(10, 10, 10)
     const_val = 2
@@ -405,6 +421,7 @@ def test_vect_mul():
     assert v_res == m3d.Vector(20, 20, 20)
     assert v_res_2 == m3d.Vector(-50, -50, -50)
 
+
 def test_vect_div():
     v1 = m3d.Vector(10, 10, 10)
     const_val = 2
@@ -413,6 +430,7 @@ def test_vect_div():
     v_res_2 = v1 / const_val_2
     assert v_res == m3d.Vector(5, 5, 5)
     assert v_res_2 == m3d.Vector(-2, -2, -2)
+
 
 def test_substraction():
     v1 = m3d.Vector(1, 2, 3)
@@ -515,17 +533,20 @@ def test_norm():
     v.normalize()
     assert abs(v.length - 1) <= m3d.float_eps
 
+
 def test_from_xy():
     x = m3d.Vector(1, 0, 0)
     y = m3d.Vector(0.01, 2.1, 0)
     orient = m3d.Orientation.from_xy(x, y)
     assert _are_equals(orient.data, np.identity(3), eps=0.1)
 
+
 def test_from_yz():
     y = m3d.Vector(0, 1, 0)
     z = m3d.Vector(0, 0.01, 0.1)
     orient = m3d.Orientation.from_yz(y, z)
     assert _are_equals(orient.data, np.identity(3), eps=0.1)
+
 
 def test_from_xz():
     x = m3d.Vector(1, 0, 0)
@@ -654,7 +675,7 @@ def test_vector_dot():
     v2 = m3d.Vector(d2)
     assert np.dot(d1, d2) == v1.dot(v2)
     assert v1.dot(v2) == v1 @ v2
-    assert v1 @ v1 == v1.length ** 2 
+    assert v1 @ v1 == v1.length**2
 
 
 def test_vector_project():
@@ -684,8 +705,8 @@ def test_vector_angle():
     vz = m3d.Vector(0, 0, 1)
 
     assert vx.angle(vx) == 0
-    assert vx.angle(vy) == np.pi/2
-    assert vx.angle(vz) == np.pi/2
+    assert vx.angle(vy) == np.pi / 2
+    assert vx.angle(vz) == np.pi / 2
 
     assert v1.angle(v2) == 0
     assert v2.angle(v1) == 0
@@ -702,13 +723,13 @@ def test_vector_angle_perp():
     vz = m3d.Vector(0, 0, 1)
 
     assert vx.angle(vx, vz) == 0
-    assert vx.angle(vy, vz) == np.pi/2
-    assert vx.angle(vz, vy) == -np.pi/2
+    assert vx.angle(vy, vz) == np.pi / 2
+    assert vx.angle(vz, vy) == -np.pi / 2
 
     # Flip nominal direction for perpendicular vector
     assert vx.angle(vx, -vz) == 0
-    assert vx.angle(vy, -vz) == -np.pi/2
-    assert vx.angle(vz, -vy) == np.pi/2
+    assert vx.angle(vy, -vz) == -np.pi / 2
+    assert vx.angle(vz, -vy) == np.pi / 2
 
     assert v1.angle(v2, vz) == -v1.angle(v2, -vz)
     assert v1.angle(v2, vz) == v1.angle(v3, -vz)
