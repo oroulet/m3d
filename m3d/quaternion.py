@@ -7,19 +7,18 @@ class Quaternion(object):
     Takes a list/array of length 4 as argument.
     """
     def __init__(self, x=[0, 0, 0, 0]):
-            if isinstance(x, (list, tuple)):
-                if len(x) == 4:
-                    self._data = np.array(x)
-                else:
-                    raise ValueError(f"A list of length 4 is expected, got {x}")
-            elif isinstance(x, np.ndarray):
-                if x.shape == (4,):
-                    self._data = x
-                else:
-                    raise ValueError(f"A array of shape (4,) is expected got {x}")
+        if isinstance(x, (list, tuple)):
+            if len(x) == 4:
+                self._data = np.array(x)
+            else:
+                raise ValueError(f"A list of length 4 is expected, got {x}")
+        elif isinstance(x, np.ndarray):
+            if x.shape == (4, ):
+                self._data = x
             else:
                 raise ValueError(f"A array of shape (4,) is expected got {x}")
-
+        else:
+            raise ValueError(f"A array of shape (4,) is expected got {x}")
 
     def __str__(self):
         return "Quaternion({})".format(self._data)
@@ -37,7 +36,7 @@ class Quaternion(object):
     def scalar(self):
         return self._data[0]
 
-    @property   
+    @property
     def vec(self):
         return self._data[1:]
 
@@ -64,7 +63,7 @@ class Quaternion(object):
 
     @property
     def conjugate(self):
-        return Quaternion([self._data[0], - self._data[1], - self.data[2], - self.data[3]])
+        return Quaternion([self._data[0], -self._data[1], -self.data[2], -self.data[3]])
 
     def copy(self):
         return Quaternion(self._data.copy())

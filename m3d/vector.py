@@ -8,7 +8,6 @@ class Vector(object):
     Represent a vector.
     Takes either x, y, z as argument or a list/array
     """
-
     def __init__(self, x=0.0, y=0.0, z=0.0, dtype=np.float32):
         if isinstance(x, (list, tuple)):
             if len(x) == 3:
@@ -16,7 +15,7 @@ class Vector(object):
             else:
                 raise ValueError(f"A list of length 3 is expected, got {x}")
         elif isinstance(x, np.ndarray):
-            if x.shape == (3,):
+            if x.shape == (3, ):
                 self._data = x
             else:
                 raise ValueError(f"A array of shape (3,) is expected got {x}")
@@ -73,6 +72,7 @@ class Vector(object):
     @property
     def data(self) -> np.ndarray:
         return self._data
+
     array = data
 
     def __eq__(self, other):

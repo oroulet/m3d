@@ -23,27 +23,51 @@ class Orientation(object):
             raise ValueError(f"A numpy array of size (3, 3) is expected not {data}")
 
     def rotate_xb(self, val: float):
-        t = np.array([[1, 0, 0], [0, np.cos(val), -np.sin(val)], [0, np.sin(val), np.cos(val)]])
+        t = np.array([
+            [1, 0, 0],
+            [0, np.cos(val), -np.sin(val)],
+            [0, np.sin(val), np.cos(val)],
+        ])
         self._data[:] = t @ self._data
 
     def rotate_yb(self, val: float):
-        t = np.array([[np.cos(val), 0, np.sin(val)], [0, 1, 0], [-np.sin(val), 0, np.cos(val)]])
+        t = np.array([
+            [np.cos(val), 0, np.sin(val)],
+            [0, 1, 0],
+            [-np.sin(val), 0, np.cos(val)],
+        ])
         self._data[:] = t @ self._data
 
     def rotate_zb(self, val: float):
-        t = np.array([[np.cos(val), -np.sin(val), 0], [np.sin(val), np.cos(val), 0], [0, 0, 1]])
+        t = np.array([
+            [np.cos(val), -np.sin(val), 0],
+            [np.sin(val), np.cos(val), 0],
+            [0, 0, 1],
+        ])
         self._data[:] = t @ self._data
 
     def rotate_xt(self, val: float):
-        t = np.array([[1, 0, 0], [0, np.cos(val), -np.sin(val)], [0, np.sin(val), np.cos(val)]])
+        t = np.array([
+            [1, 0, 0],
+            [0, np.cos(val), -np.sin(val)],
+            [0, np.sin(val), np.cos(val)],
+        ])
         self._data[:] = self._data @ t
 
     def rotate_yt(self, val: float):
-        t = np.array([[np.cos(val), 0, np.sin(val)], [0, 1, 0], [-np.sin(val), 0, np.cos(val)]])
+        t = np.array([
+            [np.cos(val), 0, np.sin(val)],
+            [0, 1, 0],
+            [-np.sin(val), 0, np.cos(val)],
+        ])
         self._data[:] = self._data @ t
 
     def rotate_zt(self, val: float):
-        t = np.array([[np.cos(val), -np.sin(val), 0], [np.sin(val), np.cos(val), 0], [0, 0, 1]])
+        t = np.array([
+            [np.cos(val), -np.sin(val), 0],
+            [np.sin(val), np.cos(val), 0],
+            [0, 0, 1],
+        ])
         self._data[:] = self._data @ t
 
     def __str__(self):
@@ -104,9 +128,12 @@ class Orientation(object):
 
         Qxx, Qyx, Qzx, Qxy, Qyy, Qzy, Qxz, Qyz, Qzz = self._data.flat
         # Fill only lower half of symmetric matrix
-        K = np.array([[Qxx - Qyy - Qzz, 0, 0, 0], [Qyx + Qxy, Qyy - Qxx - Qzz, 0, 0], [
-            Qzx + Qxz, Qzy + Qyz, Qzz - Qxx - Qyy, 0
-        ], [Qyz - Qzy, Qzx - Qxz, Qxy - Qyx, Qxx + Qyy + Qzz]]) / 3.0
+        K = np.array([
+            [Qxx - Qyy - Qzz, 0, 0, 0],
+            [Qyx + Qxy, Qyy - Qxx - Qzz, 0, 0],
+            [Qzx + Qxz, Qzy + Qyz, Qzz - Qxx - Qyy, 0],
+            [Qyz - Qzy, Qzx - Qxz, Qxy - Qyx, Qxx + Qyy + Qzz],
+        ]) / 3.0
         # Use Hermitian eigenvectors, values for speed
         vals, vecs = np.linalg.eigh(K)
         # Select largest eigenvector, reorder to w,x,y,z quaternion
@@ -137,9 +164,11 @@ class Orientation(object):
         yY = y * Y
         yZ = y * Z
         zZ = z * Z
-        return Orientation(
-            np.array([[1.0 - (yY + zZ), xY - wZ, xZ + wY], [xY + wZ, 1.0 - (xX + zZ), yZ - wX],
-                      [xZ - wY, yZ + wX, 1.0 - (xX + yY)]]))
+        return Orientation(np.array([
+            [1.0 - (yY + zZ), xY - wZ, xZ + wY],
+            [xY + wZ, 1.0 - (xX + zZ), yZ - wX],
+            [xZ - wY, yZ + wX, 1.0 - (xX + yY)],
+        ]))
 
     @staticmethod
     def from_axis_angle(axis, angle, is_normalized=False):
@@ -163,9 +192,11 @@ class Orientation(object):
         xyC = x * yC
         yzC = y * zC
         zxC = z * xC
-        return Orientation(
-            np.array([[x * xC + c, xyC - zs, zxC + ys], [xyC + zs, y * yC + c, yzC - xs],
-                      [zxC - ys, yzC + xs, z * zC + c]]))
+        return Orientation(np.array([
+            [x * xC + c, xyC - zs, zxC + ys],
+            [xyC + zs, y * yC + c, yzC - xs],
+            [zxC - ys, yzC + xs, z * zC + c],
+        ]))
 
     @staticmethod
     def from_xy(x_vec, y_vec):

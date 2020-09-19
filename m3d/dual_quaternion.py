@@ -1,13 +1,10 @@
 import numpy as np
 
-
 from m3d.common import float_eps
 from m3d.quaternion import Quaternion
 
 
 class DualQuaternion(object):
-
-
     def __init__(self, vector=None):
         if vector is not None:
             self._data = vector
@@ -24,11 +21,11 @@ class DualQuaternion(object):
     @property
     def q_rot(self):
         return Quaternion(self._data[:4])
-    
+
     @property
     def q_trans(self):
         return Quaternion(self._data[4:])
-    
+
     @staticmethod
     def from_transformation(trans):
         """
@@ -42,7 +39,7 @@ class DualQuaternion(object):
         """
 
         q_rot = Quaternion(trans.orient.to_quaternion())
-        q_trans = 0.5 * Quaternion([0, *trans.pos.data]) * q_rot 
+        q_trans = 0.5 * Quaternion([0, *trans.pos.data]) * q_rot
         return DualQuaternion([*q_rot.data, *q_trans.data])
 
     def __mul__(self, other):
@@ -61,7 +58,6 @@ class DualQuaternion(object):
         else:
             raise ValueError()
 
-
     @property
     def conjugate(self):
         return DualQuaternion([*self.q_rot.conjugate.data, *self.q_trans.conjugate.data])
@@ -78,5 +74,3 @@ class DualQuaternion(object):
             return True
         else:
             return False
-
-        
