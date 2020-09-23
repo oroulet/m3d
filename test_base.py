@@ -372,6 +372,16 @@ def test_axis_angle():
     assert o.similar(o2, CONVERTION_ERROR)
 
 
+def test_from_axis_angle():
+    axis_tuple = (1, 2, 3)
+    axis_normalized = m3d.Vector(axis_tuple).normalized()
+    angle = 10
+
+    o1 = m3d.Orientation.from_axis_angle(axis_tuple, angle)
+    o2 = m3d.Orientation.from_axis_angle(axis_normalized, angle)
+    assert o1.similar(o2, CONVERTION_ERROR)
+
+
 def test_pc():
     pc = np.array([[1, 2, 3], [1, 2, 3], [2, 3, 4], [3, 4, 5], [3, 4, 5]])
     t = m3d.Transform()

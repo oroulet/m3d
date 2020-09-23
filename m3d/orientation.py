@@ -164,22 +164,23 @@ class Orientation(object):
         yY = y * Y
         yZ = y * Z
         zZ = z * Z
-        return Orientation(np.array([
-            [1.0 - (yY + zZ), xY - wZ, xZ + wY],
-            [xY + wZ, 1.0 - (xX + zZ), yZ - wX],
-            [xZ - wY, yZ + wX, 1.0 - (xX + yY)],
-        ]))
+        return Orientation(
+            np.array([
+                [1.0 - (yY + zZ), xY - wZ, xZ + wY],
+                [xY + wZ, 1.0 - (xX + zZ), yZ - wX],
+                [xZ - wY, yZ + wX, 1.0 - (xX + yY)],
+            ]))
 
     @staticmethod
     def from_axis_angle(axis, angle, is_normalized=False):
         # adapted from
         # https://github.com/matthew-brett/transforms3d/blob/master/transforms3d/quaternions.py
-        x, y, z = axis
+
+        axis = Vector(axis) if not isinstance(axis, Vector) else axis
+
         if not is_normalized:
-            n = math.sqrt(x * x + y * y + z * z)
-            x = x / n
-            y = y / n
-            z = z / n
+            axis.normalize()
+        x, y, z = axis
         c = math.cos(angle)
         s = math.sin(angle)
         C = 1 - c
@@ -192,11 +193,12 @@ class Orientation(object):
         xyC = x * yC
         yzC = y * zC
         zxC = z * xC
-        return Orientation(np.array([
-            [x * xC + c, xyC - zs, zxC + ys],
-            [xyC + zs, y * yC + c, yzC - xs],
-            [zxC - ys, yzC + xs, z * zC + c],
-        ]))
+        return Orientation(
+            np.array([
+                [x * xC + c, xyC - zs, zxC + ys],
+                [xyC + zs, y * yC + c, yzC - xs],
+                [zxC - ys, yzC + xs, z * zC + c],
+            ]))
 
     @staticmethod
     def from_xy(x_vec, y_vec):
@@ -289,11 +291,11 @@ class Orientation(object):
             v = Vector(*v)
         if not isinstance(v, Vector):
             raise ValueError("Method take a Vector as argument")
-        if (v.data == 0).all():
+        if v.length == 0:
             return Orientation(np.identity(3, dtype=np.float32))
         u = v.normalized()
         idx = (u.data != 0).argmax()
-        return Orientation.from_axis_angle(u, v[idx] / u[idx])
+        return Orientation.from_axis_angle(u, v[idx] / u[idx], True)
 
     def copy(self):
         return Orientation(self.data.copy())
