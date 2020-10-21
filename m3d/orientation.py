@@ -6,7 +6,7 @@ from m3d.vector import Vector
 from m3d.common import float_eps
 
 
-class Orientation(object):
+class Orientation:
     def __init__(self, data: np.ndarray = None, dtype=np.float32):
         if isinstance(data, np.ndarray):
             if data.shape == (3, 3):
@@ -102,17 +102,15 @@ class Orientation(object):
     def __mul__(self, other):
         if isinstance(other, Vector):
             return Vector(self._data @ other.data)
-        elif isinstance(other, Orientation):
+        if isinstance(other, Orientation):
             return Orientation(self._data @ other.data)
-        elif isinstance(other, np.ndarray):
+        if isinstance(other, np.ndarray):
             if other.shape[0] == 3:
                 return self.data @ other
-            elif other.shape[1] == 3:
+            if other.shape[1] == 3:
                 return (self.data @ other.T).T
-            else:
-                raise ValueError("Array shape must be 3,x or x,3")
-        else:
-            return NotImplemented
+            raise ValueError("Array shape must be 3,x or x,3")
+        return NotImplemented
 
     __matmul__ = __mul__
 
@@ -164,12 +162,11 @@ class Orientation(object):
         yY = y * Y
         yZ = y * Z
         zZ = z * Z
-        return Orientation(
-            np.array([
-                [1.0 - (yY + zZ), xY - wZ, xZ + wY],
-                [xY + wZ, 1.0 - (xX + zZ), yZ - wX],
-                [xZ - wY, yZ + wX, 1.0 - (xX + yY)],
-            ]))
+        return Orientation(np.array([
+            [1.0 - (yY + zZ), xY - wZ, xZ + wY],
+            [xY + wZ, 1.0 - (xX + zZ), yZ - wX],
+            [xZ - wY, yZ + wX, 1.0 - (xX + yY)],
+        ]))
 
     @staticmethod
     def from_axis_angle(axis, angle, is_normalized=False):
@@ -193,12 +190,11 @@ class Orientation(object):
         xyC = x * yC
         yzC = y * zC
         zxC = z * xC
-        return Orientation(
-            np.array([
-                [x * xC + c, xyC - zs, zxC + ys],
-                [xyC + zs, y * yC + c, yzC - xs],
-                [zxC - ys, yzC + xs, z * zC + c],
-            ]))
+        return Orientation(np.array([
+            [x * xC + c, xyC - zs, zxC + ys],
+            [xyC + zs, y * yC + c, yzC - xs],
+            [zxC - ys, yzC + xs, z * zC + c],
+        ]))
 
     @staticmethod
     def from_xy(x_vec, y_vec):
@@ -212,9 +208,9 @@ class Orientation(object):
         x_vec.normalize()
         y_vec.normalize()
         orient = Orientation()
-        orient._data[:, 0] = x_vec.data
-        orient._data[:, 2] = x_vec.cross(y_vec).normalized().data
-        orient._data[:, 1] = Vector(np.cross(orient._data[:, 2], x_vec.data)).normalized().data
+        orient.data[:, 0] = x_vec.data
+        orient.data[:, 2] = x_vec.cross(y_vec).normalized().data
+        orient.data[:, 1] = Vector(np.cross(orient.data[:, 2], x_vec.data)).normalized().data
         return orient
 
     @staticmethod
@@ -229,9 +225,9 @@ class Orientation(object):
         y_vec.normalize()
         z_vec.normalize()
         orient = Orientation()
-        orient._data[:, 1] = y_vec.data
-        orient._data[:, 0] = y_vec.cross(z_vec).normalized().data
-        orient._data[:, 2] = Vector(np.cross(orient._data[:, 0], y_vec.data)).normalized().data
+        orient.data[:, 1] = y_vec.data
+        orient.data[:, 0] = y_vec.cross(z_vec).normalized().data
+        orient.data[:, 2] = Vector(np.cross(orient.data[:, 0], y_vec.data)).normalized().data
         return orient
 
     @staticmethod
@@ -246,15 +242,14 @@ class Orientation(object):
         x_vec.normalize()
         z_vec.normalize()
         orient = Orientation()
-        orient._data[:, 1] = z_vec.cross(x_vec).normalized().data
+        orient.data[:, 1] = z_vec.cross(x_vec).normalized().data
 
         if ref == 'x':
-            orient._data[:, 0] = x_vec.data
-            orient._data[:, 2] = Vector(np.cross(x_vec.data, orient._data[:, 1])).normalized().data
+            orient.data[:, 0] = x_vec.data
+            orient.data[:, 2] = Vector(np.cross(x_vec.data, orient.data[:, 1])).normalized().data
         elif ref == 'z':
-            orient._data[:, 2] = z_vec.data
-            orient._data[:, 0] = Vector(np.cross(orient._data[:, 1], z_vec.data)).normalized().data
-
+            orient.data[:, 2] = z_vec.data
+            orient.data[:, 0] = Vector(np.cross(orient.data[:, 1], z_vec.data)).normalized().data
         else:
             raise ValueError('Value of ref can only be x or z')
 

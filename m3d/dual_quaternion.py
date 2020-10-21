@@ -4,7 +4,7 @@ from m3d.common import float_eps
 from m3d.quaternion import Quaternion
 
 
-class DualQuaternion(object):
+class DualQuaternion:
     def __init__(self, vector=None):
         if vector is not None:
             self._data = vector
@@ -47,16 +47,14 @@ class DualQuaternion(object):
             q_rot = self.q_rot * other.q_rot
             q_trans = self.q_rot * other.q_trans + self.q_trans * other.q_rot
             return DualQuaternion([*q_rot.data, *q_trans.data])
-        elif isinstance(other, (float, int)):
+        if isinstance(other, (float, int)):
             return DualQuaternion(other * self._data)
-        else:
-            raise ValueError()
+        raise ValueError()
 
     def __rmul__(self, other):
         if isinstance(other, (float, int)):
             return DualQuaternion(self._data * other)
-        else:
-            raise ValueError()
+        raise ValueError()
 
     @property
     def conjugate(self):
@@ -70,7 +68,4 @@ class DualQuaternion(object):
         it must be of unit length.
         """
         norm = np.linalg.norm((self * self.conjugate).data)
-        if abs(1 - norm) < float_eps:
-            return True
-        else:
-            return False
+        return abs(1 - norm) < float_eps

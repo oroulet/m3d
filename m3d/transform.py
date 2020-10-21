@@ -5,7 +5,7 @@ from m3d.orientation import Orientation
 from m3d.common import float_eps
 
 
-class Transform(object):
+class Transform:
     """
     Create a new Transform object
     Accepts an orientation and a vector or a matrix 4*4 as argument
@@ -17,7 +17,6 @@ class Transform(object):
     When creating a new Transform object from an Orientation and
     Vector or 2 numpy arrays, you are copying them
     """
-
     def __init__(self, orientation=None, vector=None, matrix=None, dtype=np.float32):
         if matrix is not None:
             self._data = matrix
@@ -107,7 +106,7 @@ class Transform(object):
         """
         In-place inverse the matrix
         """
-        self._data[:,:] = np.linalg.inv(self._data)
+        self._data[:, :] = np.linalg.inv(self._data)
 
     def __eq__(self, other):
         return self.similar(other)
@@ -116,18 +115,16 @@ class Transform(object):
         if isinstance(other, Vector):
             data = self.orient.data @ other.data + self.pos.data
             return Vector(data)
-        elif isinstance(other, Transform):
+        if isinstance(other, Transform):
             return Transform(matrix=self._data @ other.data)
-        elif isinstance(other, np.ndarray):
+        if isinstance(other, np.ndarray):
             # This make it easy to support several format of point clouds but might be mathematically wrong
             if other.shape[0] == 3:
                 return (self.orient.data @ other) + self.pos.data.reshape(3, 1)
-            elif other.shape[1] == 3:
+            if other.shape[1] == 3:
                 return (self.orient.data @ other.T).T + self.pos.data
-            else:
-                raise ValueError("Array shape must be 3, x or x, 3")
-        else:
-            return NotImplemented
+            raise ValueError("Array shape must be 3, x or x, 3")
+        return NotImplemented
 
     __matmul__ = __mul__
 

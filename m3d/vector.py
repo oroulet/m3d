@@ -3,7 +3,7 @@ import numpy as np
 from m3d.common import float_eps
 
 
-class Vector(object):
+class Vector:
     """
     Represent a vector.
     Takes either x, y, z as argument or a list/array
@@ -79,22 +79,19 @@ class Vector(object):
         return self.similar(other)
 
     def __mul__(self, other):
-        if isinstance(other, (float, int)):
-            return Vector(self._data * other)
-        else:
+        if not isinstance(other, (float, int)):
             raise ValueError()
+        return Vector(self._data * other)
 
     def __truediv__(self, other):
-        if isinstance(other, (float, int)):
-            return Vector(self._data / other)
-        else:
+        if not isinstance(other, (float, int)):
             raise ValueError()
+        return Vector(self._data / other)
 
     def __rmul__(self, other):
-        if isinstance(other, (float, int)):
-            return Vector(self._data * other)
-        else:
+        if not isinstance(other, (float, int)):
             raise ValueError()
+        return Vector(self._data * other)
 
     @property
     def length(self):

@@ -1,12 +1,15 @@
 import numpy as np
 
 
-class Quaternion(object):
+class Quaternion:
     """
     Represent a quaternion
     Takes a list/array of length 4 as argument.
+    default to [0, 0, 0 ,0]
     """
-    def __init__(self, x=[0, 0, 0, 0]):
+    def __init__(self, x=None):
+        if x is None:
+            x = [0, 0, 0, 0]
         if isinstance(x, (list, tuple)):
             if len(x) == 4:
                 self._data = np.array(x)
@@ -41,10 +44,9 @@ class Quaternion(object):
         return self._data[1:]
 
     def __rmul__(self, other):
-        if isinstance(other, (float, int)):
-            return Quaternion(self._data * other)
-        else:
+        if not isinstance(other, (float, int)):
             raise ValueError()
+        return Quaternion(self._data * other)
 
     def __mul__(self, other):
         if isinstance(other, Quaternion):
@@ -55,11 +57,10 @@ class Quaternion(object):
             scalar_part = np.asarray([s1 * s2 - np.dot(q1, q2)])
             imag_part = np.asarray(s1 * q2 + s2 * q1 + np.cross(q1, q2))
             return np.hstack((scalar_part, imag_part))
-        elif isinstance(other, (int, float)):
+        if isinstance(other, (int, float)):
             return Quaternion(other * self._data)
 
-        else:
-            raise ValueError("Cannot multiply quaternion with type {}".format(type(other)))
+        raise ValueError("Cannot multiply quaternion with type {}".format(type(other)))
 
     @property
     def conjugate(self):
